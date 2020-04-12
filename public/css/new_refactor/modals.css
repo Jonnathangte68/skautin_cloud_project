@@ -1,0 +1,22 @@
+.talent-video-preview-body {
+    height: 600px;
+}
+
+.full-video-modal {
+    height: 100%;
+    background-color: black;
+}
+
+.video-modal-body {
+    padding: 0px !important;
+}
+
+.title-name-video-preview {
+    position: absolute;
+    top: 1%;
+    left: 2%;
+    font-style: italic;
+    color: #FFFFFF;
+    cursor: pointer;
+    z-index: 30000;
+}

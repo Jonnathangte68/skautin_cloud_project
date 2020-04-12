@@ -1,0 +1,21 @@
+.container {
+    width: 90% !important;
+}
+.controlly-notbrak {
+    display: inline;
+    width: 90% !important;
+}
+.add-new-vac-title {
+    float: right;
+    clear: both;
+    padding-right: 12%;
+}
+.hmatch-large {
+    height: 720px !important;
+}
+
+.lnk-positioning-btm {
+    position: absolute;
+    bottom: 10%;
+    right: -5%;
+}
