@@ -2,6 +2,7 @@ $('document').ready(() => {
     // Mocks 
 
     const isTalentProfilePage = $('#is_preview_talent_profile_page') && $('#is_preview_talent_profile_page').val() == "true";
+    const isRecruiterJobsInformationPage = $('#is_recruiter_jobs_information_page') && $('#is_recruiter_jobs_information_page').val() == "true";
 
 
     if (isTalentProfilePage) {
@@ -22,6 +23,24 @@ $('document').ready(() => {
                     addHeaderTalentProfile(results);
                     addMainTalentProfileVideoSource(videos);
                     addOtherVideosSection(videos);
+                }
+            });
+    }
+    else if (isRecruiterJobsInformationPage) {
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: '/api/mock_retrieve_own_jobs',
+            data: {},
+        })
+            .done((response) => {
+                if (response.status === "success") {
+                    const { results } = response;
+                    console.log('values ', results);
+                    for (const job of results) {
+                        const htmlContent = apprendOwnJobRecruiter(job);
+                        $('#listed_jobs').append(htmlContent);
+                    }
                 }
             });
     } else {

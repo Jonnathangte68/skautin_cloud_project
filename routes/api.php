@@ -238,3 +238,23 @@ Route::get('mock_retrieve_talent_complete_information', function(Request $reques
         )
     );
 });
+
+Route::get('mock_retrieve_own_jobs', function(Request $request) {
+    $results = array(
+        array(
+            'title' => 'Dispatcher',
+            'country' => 'Finland',
+            'state' => 'Finland',
+            'city' => 'Finland',
+            'description' => 'Is a dispatcher that dispatch dispatches for all of the dispatched people out there',
+            'creation_time' => '24 July',
+        ),
+    );
+    return json_encode(
+        array(
+            'status' => 'success', 
+            'errors' => [], 
+            'results' => $results
+        )
+    );
+});

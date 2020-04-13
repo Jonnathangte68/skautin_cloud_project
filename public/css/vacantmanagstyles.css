@@ -3,7 +3,7 @@
 }
 .controlly-notbrak {
     display: inline;
-    width: 90% !important;
+    width: 50% !important;
 }
 .add-new-vac-title {
     float: right;
@@ -16,6 +16,6 @@
 
 .lnk-positioning-btm {
     position: absolute;
-    bottom: 10%;
-    right: -5%;
+    bottom: 0px;
+    right: 10px;
 }

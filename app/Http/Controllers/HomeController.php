@@ -100,7 +100,8 @@ class HomeController extends Controller
     }
 
     public function showRecruiterJobs() {
-        dd('test completed.');
+        // return view('recruiter.vacant_manag_view');
+        return view('new_refactor.recruiter_manage_jobs');
     }
 
     public function getCountriesAjax(Request $request, Response $response) {

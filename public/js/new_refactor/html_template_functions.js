@@ -120,3 +120,18 @@ function apprendOtherVideosToShowTalentProfileVideoSection(other_videos_ctr, vid
         `
     );
 }
+
+function apprendOwnJobRecruiter(job) {
+    console.log('job ', job);
+    return (
+        `<div class="col-md-3 item-vacant">
+            <h3>${job.title}</h3>
+            <p style="word-break: break-all;">
+                <span class="innerCountry">${job.country}</span>,
+                <span class="innerState">${job.state}</span>,
+                <span class="innerCity">${job.city}</span></p>
+            <p>${job.description}</p>
+            <p style="text-align: right;" class="pega-derecha timeago-maketime">${job.creation_time}</p>
+        </div>`
+    );
+} 
