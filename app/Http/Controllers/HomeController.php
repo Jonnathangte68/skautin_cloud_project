@@ -100,8 +100,11 @@ class HomeController extends Controller
     }
 
     public function showRecruiterJobs() {
-        // return view('recruiter.vacant_manag_view');
         return view('new_refactor.recruiter_manage_jobs');
+    }
+
+    public function showCreateJobRecruiter() {
+        return view('new_refactor.vacant_create');
     }
 
     public function getCountriesAjax(Request $request, Response $response) {

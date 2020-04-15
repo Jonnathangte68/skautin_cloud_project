@@ -28,6 +28,7 @@ Route::get('log-out','HomeController@logOut')->name('logOut')->middleware([Check
 Route::get('/home-oportunities', 'DashboardController@homeTalent')->name('hoportunities');
 Route::get('/talent-preview/{id}','HomeController@showPreviewTalentProfile')->middleware([CheckEntrance::class, CheckAuthentication::class]);
 Route::get('/jobs','HomeController@showRecruiterJobs')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('jobs');
+Route::get('/create-job','HomeController@showCreateJobRecruiter')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('create_new_job');
 
 Route::post('/validate', 'PublicoController@validateEntrance');
 Route::post('/home', 'HomeController@iniciarSesion');
@@ -139,7 +140,7 @@ Route::get('searcht_results', 'TalentController@tquerySearch')->name('searcht_re
 
 
 /* Recruiter */
-Route::resource('vacant', 'VacantController');
+// Route::resource('vacant', 'VacantController');
 Route::get('/recruiter-profile','RecruiterController@profile')->name('profile_recruiter')->middleware('rauth');
 Route::get('/connect','RecruiterController@conex')->name('connectios_recruiter')->middleware('rauth');
 Route::get('/sr/{option?}','RecruiterController@test_settings')->name('sr')->middleware('rauth');

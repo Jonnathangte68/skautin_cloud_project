@@ -58,15 +58,13 @@
 	<nav class="navbar navbar-inverse">
 	  <div class="container-fluid barra">
 	    <div class="navbar-header padleft">
-	      <a class="navbar-brand" href="#" style="padding-top: 9px;padding-right: 2px;"><img src="{{$data[0]->logo_url}}" class="logo-sz"></a>
+	      <a class="navbar-brand" href="#" style="padding-top: 9px;padding-right: 2px;"><img src="{{-- $data[0]->logo_url --}}" class="logo-sz"></a>
 	    </div>
 	    <ul class="nav navbar-nav navbar-left">
 	          <li>
-                <div style="line-height: 0.5;padding-top: 9px;"><p id="pmoto" class="logomoto letraextragrande" style="width:100%;margin: 0 !important;color:#31859C;font-family:Calibri,sans-serif;padding-top: 8px;"><b style="padding-bottom: 0px !important;">{{$data[0]->moto}}</b></p></div>
+                <div style="line-height: 0.5;padding-top: 9px;"><p id="pmoto" class="logomoto letraextragrande" style="width:100%;margin: 0 !important;color:#31859C;font-family:Calibri,sans-serif;padding-top: 8px;"><b style="padding-bottom: 0px !important;">{{-- $data[0]->moto --}}</b></p></div>
                 <div style="width:100%;font-family:Calibri,sans-serif;">
-                    @if(property_exists($data[0],'sub_moto'))
-                        <b style="color: #686868;">{{$data[0]->sub_moto}}</b>
-                    @endif
+                    Ds
                 </div>
 	          </li>
 	    </ul>

@@ -15,7 +15,7 @@
         </div>
         </div>
         <div id="listed_jobs" class="row">
-            <a href="{{route('vacant.create')}}" style="position: absolute; bottom: 15px; right: 5%;">Add (+) new vacant...</a>
+            <a href="{{route('create_new_job')}}" style="position: absolute; bottom: 15px; right: 5%;">Add (+) new vacant...</a>
         </div>
         <input id="is_recruiter_jobs_information_page" type="hidden" value="true">
     </section>
