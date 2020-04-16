@@ -1,8 +1,13 @@
+var isTalentProfilePage = false;
+var isRecruiterJobsInformationPage = false;
+var isRecruiterJobCreationPage = false;
+
 $('document').ready(() => {
     // Mocks 
 
-    const isTalentProfilePage = $('#is_preview_talent_profile_page') && $('#is_preview_talent_profile_page').val() == "true";
-    const isRecruiterJobsInformationPage = $('#is_recruiter_jobs_information_page') && $('#is_recruiter_jobs_information_page').val() == "true";
+    isTalentProfilePage = $('#is_preview_talent_profile_page') && $('#is_preview_talent_profile_page').val() == "true";
+    isRecruiterJobsInformationPage = $('#is_recruiter_jobs_information_page') && $('#is_recruiter_jobs_information_page').val() == "true";
+    isRecruiterJobCreationPage = $('#is_recruiter_job_creation_page') && $('#is_recruiter_job_creation_page').val() == "true";
 
 
     if (isTalentProfilePage) {
@@ -43,7 +48,38 @@ $('document').ready(() => {
                     }
                 }
             });
-    } else {
+    }
+    else if (isRecruiterJobCreationPage) {
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: '/api/countries',
+        })
+            .done((response) => {
+                if (response) {
+                    response.forEach((country) => {
+                        const htmlContent = apprendInnerCountry(country.label, country.value);
+                        $('#country').append(htmlContent);
+                    });
+                }
+            });
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: '/api/categories',
+        })
+            .done((response) => {
+                if (response) {
+                    response.forEach((category) => {
+                        const key = Object.keys(category)[0];
+                        const value = Object.values(category)[0];
+                        const htmlContent = apprendInnerCategory(key, value);
+                        $('#category').append(htmlContent);
+                    });
+                }
+            });
+    }
+    else {
         $.ajax({
             type: "GET",
             dataType: "json",
@@ -110,6 +146,12 @@ $('document').ready(() => {
     }
 });
 
+stopVideoLoading = async () => {
+    for (let i = 0; i < $('video').length; i++) {
+        $('video')[i].pause();
+    }
+}
+
 updateVideoSource = (videoUri, name, id) => {
     $('#bigPreviewTalentVideo').attr("src", '/api/stream/' + videoUri);
     $('#bigPreviewTalentTitleName').text(name);
@@ -119,7 +161,8 @@ updateVideoSource = (videoUri, name, id) => {
     }, 300);
 };
 
-openTalentProfilePage = () => {
+openTalentProfilePage = async () => {
+    await stopVideoLoading();
     const userId = $('.full-video-modal h2').attr('data-userId');
     if (userId) {
         const newUrl = `/talent-preview/${userId}`;
@@ -155,3 +198,140 @@ addOtherVideosSection = (videos) => {
     const htmlContent = apprendOtherVideosToShowTalentProfileVideoSection(numberOfOtherVideos, videos);
     $('#right_box_other_videos').append(htmlContent);
 }
+
+validateNewJobCreation = (formData) => {
+    let resultStatus = true;
+    if (!formData.title) {
+        const htmlContent = apprendEmptyErrorCreateJob('Title cannot be empty');
+        $('#form_errors').append(htmlContent);
+    }
+    if (!formData.description) {
+        const htmlContent = apprendEmptyErrorCreateJob('Description cannot be empty');
+        $('#form_errors').append(htmlContent);
+    }
+    if (!formData.category) {
+        const htmlContent = apprendEmptyErrorCreateJob('Job must be assigned to a particular category');
+        $('#form_errors').append(htmlContent);
+    }
+    if (!formData.subcategory) {
+        const htmlContent = apprendEmptyErrorCreateJob('Job must be assigned to a particular sub-category');
+        $('#form_errors').append(htmlContent);
+    }
+    if (!formData.country) {
+        const htmlContent = apprendEmptyErrorCreateJob('Job must be located in a country');
+        $('#form_errors').append(htmlContent);
+    }
+    if (!formData.state) {
+        const htmlContent = apprendEmptyErrorCreateJob('Job must be located in a state');
+        $('#form_errors').append(htmlContent);
+    }
+    if (!formData.city) {
+        const htmlContent = apprendEmptyErrorCreateJob('Job must be located in a city');
+        $('#form_errors').append(htmlContent);
+    }
+    return resultStatus;
+}
+
+$('#submitNewJob').click(function () {
+    const title = $('#title').val();
+    const description = $('#description').val();
+    const requirements = $('#requirements').val();
+    const category = $('#category').val();
+    const subcategory = $('#subcategory').val();
+    const country = $('#country').val();
+    const state = $('#state').val();
+    const city = $('#city').val();
+    const job_type = $('#job_type').val();
+    const level = $('#level').val();
+    const submitFormData = { title, description, requirements, category, subcategory, country, state, city, job_type, level }
+    // Validate
+    const validationResult = validateNewJobCreation(submitFormData);
+    if (validationResult) {
+        // Submit
+        $.ajax({
+            method: "POST",
+            dataType: "json",
+            url: "/api/mock_store_jobs",
+            data: submitFormData
+        })
+            .done(function (result) {
+                console.log('data saved result ', result);
+            });
+        console.log('submitFormData ', submitFormData);
+    }
+});
+
+cleanSubcategoryList = () => {
+    $('#subcategory').empty();
+    $('#subcategory').append(`<option>Please select a category.</option>`);
+}
+
+cleanStateList = () => {
+    $('#state').empty();
+    $('#state').append(`<option>Please select a country.</option>`);
+}
+
+cleanCitiesList = () => {
+    $('#city').empty();
+    $('#city').append(`<option>Please select a state.</option>`);
+}
+
+$('#category').change(function () {
+    if (isRecruiterJobCreationPage) {
+        cleanSubcategoryList();
+        const selectedCategory = $('#category').val();
+        if (selectedCategory) {
+            $.ajax({
+                url: "/api/getcategsxsubcategs" + "?category=" + selectedCategory,
+                dataType: "json",
+                type: "get",
+                success: function (response) {
+                    console.log('response subcategories ', response);
+                    if (response) {
+                        response.forEach((sub) => {
+                            const htmlContent = apprendOwnJobSubcategoriesRecruiter(sub);
+                            $('#subcategory').append(htmlContent);
+                        });
+                    }
+                },
+                error: function (xhr) {
+                    //console.log(xhr);
+                }
+            });
+        }
+    }
+});
+
+$('#country').change(function () {
+    if (isRecruiterJobCreationPage) {
+        cleanStateList();
+        $.ajax({
+            url: "/api/states",
+            dataType: "json",
+            data: { q: '', country: $("#country").val() },
+            success: function (data) {
+                for (const state of Object.values(data)) {
+                    const htmlContent = apprendSelectableStateJobCreationRecruiter(state);
+                    $('#state').append(htmlContent);
+                };
+            }
+        });
+    }
+});
+
+$('#state').change(function () {
+    if (isRecruiterJobCreationPage) {
+        cleanCitiesList();
+        $.ajax({
+            url: "/api/cities",
+            dataType: "json",
+            data: { q: '', state: $("#state").val() },
+            success: function (data) {
+                for (const city of Object.values(data)) {
+                    const htmlContent = apprendSelectableCityJobCreationRecruiter(city);
+                    $('#city').append(htmlContent);
+                };
+            }
+        });
+    }
+});

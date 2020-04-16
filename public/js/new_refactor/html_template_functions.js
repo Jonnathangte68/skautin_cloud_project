@@ -134,4 +134,42 @@ function apprendOwnJobRecruiter(job) {
             <p style="text-align: right;" class="pega-derecha timeago-maketime">${job.creation_time}</p>
         </div>`
     );
-} 
+}
+
+function apprendEmptyErrorCreateJob(title) {
+    return (
+        `
+        <p style="color:red;">${title}<p>
+        `
+    );
+}
+
+function apprendInnerCountry(label, value) {
+    return (
+        `<option value='${value}'>${label}</option>`
+    );
+}
+
+function apprendInnerCategory(key, value) {
+    return (
+        `<option value='${key}'>${value}</option>`
+    );
+}
+
+function apprendOwnJobSubcategoriesRecruiter(subcategory) {
+    return (
+        `<option value='${subcategory.id}'>${subcategory.name}</option>`
+    );
+}
+
+function apprendSelectableStateJobCreationRecruiter(state) {
+    return (
+        `<option value="${state.value}">${state.label}</option>`
+    );
+}
+
+function apprendSelectableCityJobCreationRecruiter(city) {
+    return (
+        `<option value="${city.value}">${city.label}</option>`
+    );
+}

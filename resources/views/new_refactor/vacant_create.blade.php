@@ -4,7 +4,11 @@
 
 @section('center_box')
     <section>
+        <div id="form_errors" class="errors_form">
+            
+        </div>
         @include('new_refactor.forms.new_job')
+        <input id="is_recruiter_job_creation_page" type="hidden" value="true"/>
     </section>
 @endsection
 
@@ -27,6 +31,18 @@
             .form-content-new-job {
                 height: 60vh !important;
             }
+        }
+        .errors_form {
+            width: 96%;
+            margin-left: 2%;
+            margin-right: auto;
+        }
+        .no-boot-padding-col {
+            padding-left: 0px !important;
+            padding-right: 0px !important;
+        }
+        .higher-height-field {
+            height: 115px !important;
         }
     </style>
 @endsection

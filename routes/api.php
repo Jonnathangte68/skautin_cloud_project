@@ -25,21 +25,21 @@ $countryList = array(
 );
 
 $stateList = array(
-    array('label' => 'Finland', 'value' => 1, 'country' => 'Finland'),
-    array('label' => 'Norway', 'value' => 2, 'country' => 'Norway'),
-    array('label' => 'Sweden', 'value' => 3, 'country' => 'Sweden'),
-    array('label' => 'Denmark', 'value' => 4, 'country' => 'Denmark'),
-    array('label' => 'Iceland', 'value' => 5, 'country' => 'Iceland'),
-    array('label' => 'Germany', 'value' => 6, 'country' => 'Germany'),
+    array('label' => 'Finland', 'value' => 1, 'country' => '1', 'country_name' => 'Finland'),
+    array('label' => 'Norway', 'value' => 2, 'country' => '2', 'country_name' => 'Norway'),
+    array('label' => 'Sweden', 'value' => 3, 'country' => '3', 'country_name' => 'Sweden'),
+    array('label' => 'Denmark', 'value' => 4, 'country' => '4', 'country_name' => 'Denmark'),
+    array('label' => 'Iceland', 'value' => 5, 'country' => '5', 'country_name' => 'Iceland'),
+    array('label' => 'Germany', 'value' => 6, 'country' => '6', 'country_name' => 'Germany'),
 );
 
 $cityList = array(
-    array('label' => 'Finland', 'value' => 1, 'state' => 'Finland'),
-    array('label' => 'Norway', 'value' => 2, 'state' => 'Norway'),
-    array('label' => 'Sweden', 'value' => 3, 'state' => 'Sweden'),
-    array('label' => 'Denmark', 'value' => 4, 'state' => 'Denmark'),
-    array('label' => 'Iceland', 'value' => 5, 'state' => 'Iceland'),
-    array('label' => 'Germany', 'value' => 6, 'state' => 'Germany'),
+    array('label' => 'Finland', 'value' => 1, 'state' => '1', 'state_name' => 'Finland'),
+    array('label' => 'Norway', 'value' => 2, 'state' => '2', 'state_name' => 'Norway'),
+    array('label' => 'Sweden', 'value' => 3, 'state' => '3', 'state_name' => 'Sweden'),
+    array('label' => 'Denmark', 'value' => 4, 'state' => '4', 'state_name' => 'Denmark'),
+    array('label' => 'Iceland', 'value' => 5, 'state' => '5', 'state_name' => 'Iceland'),
+    array('label' => 'Germany', 'value' => 6, 'state' => '6', 'state_name' => 'Germany'),
 );
 
 $categoryList = array(
@@ -58,6 +58,9 @@ $categoryList = array(
 Route::get('/countries', function (Request $request) use ($countryList) {
     error_log(json_encode(array('name' => 'error', 'values' => $countryList)));
     $searchTerm = $request->input('q');
+    if (!$searchTerm) {
+        return json_encode($countryList);
+    }
     $results = array();
     foreach ($countryList as $country) {
         if (strpos($country['label'], $searchTerm) !== false) {
@@ -71,9 +74,15 @@ Route::get('/states', function (Request $request) use ($stateList) {
     error_log(json_encode(array('name' => 'error', 'values' => $stateList)));
     $searchTerm = $request->input('q');
     $country = $request->input('country');
+    if(!$searchTerm) {
+        return array_filter($stateList, function($state) use ($country) {
+            error_log('country filter ' . json_encode($country));
+            return $country === $state['country'];
+        }, ARRAY_FILTER_USE_BOTH);
+    }
     $results = array();
     foreach ($stateList as $state) {
-        if (strpos($state['label'], $searchTerm) !== false && ( $country === $state['country'] || $country === '')) {
+        if (strpos($state['label'], $searchTerm) !== false && ( $country === $state['country_name'] || $country === '')) {
             array_push($results, $state);
         }
     }
@@ -84,11 +93,30 @@ Route::get('/cities', function (Request $request) use ($cityList) {
     error_log(json_encode(array('name' => 'error', 'values' => $cityList)));
     $searchTerm = $request->input('q');
     $state = $request->input('state');
+    if(!$searchTerm) {
+        return array_filter($cityList, function($city) use ($state) {
+            return $state === $city['state'];
+        }, ARRAY_FILTER_USE_BOTH);
+    }
     $results = array();
     foreach ($cityList as $city) {
-        if (strpos($city['label'], $searchTerm) !== false && ( $state === $city['state'] || $state === '')) {
+        if (strpos($city['label'], $searchTerm) !== false && ( $state === $city['state_name'] || $state === '')) {
             array_push($results, $city);
         }
+    }
+    return json_encode($results);
+});
+
+Route::get('/categories', function (Request $request) use ($categoryList) {
+    $keys = array_keys($categoryList);
+    $values = array_map('ucfirst', $keys);
+    $results = array();
+    for ($i = 0 ; $i < count($keys) ; $i++ ) {
+        array_push($results, 
+            array(
+                $keys[$i] => $values[$i],
+            )
+        );
     }
     return json_encode($results);
 });
