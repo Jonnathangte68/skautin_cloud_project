@@ -1,6 +1,12 @@
+// Global variables
+
 var isTalentProfilePage = false;
 var isRecruiterJobsInformationPage = false;
 var isRecruiterJobCreationPage = false;
+var isRecruiterConnectionPage = false;
+var jobList = [];
+
+// Functions
 
 $('document').ready(() => {
     // Mocks 
@@ -8,6 +14,7 @@ $('document').ready(() => {
     isTalentProfilePage = $('#is_preview_talent_profile_page') && $('#is_preview_talent_profile_page').val() == "true";
     isRecruiterJobsInformationPage = $('#is_recruiter_jobs_information_page') && $('#is_recruiter_jobs_information_page').val() == "true";
     isRecruiterJobCreationPage = $('#is_recruiter_job_creation_page') && $('#is_recruiter_job_creation_page').val() == "true";
+    isRecruiterConnectionPage = $('#is_recruiter_connection_page') && $('#is_recruiter_connection_page').val() == "true";
 
 
     if (isTalentProfilePage) {
@@ -23,8 +30,6 @@ $('document').ready(() => {
                 if (response.status === "success") {
                     const { results } = response;
                     const { videos } = response.results;
-                    console.log('values ', results);
-                    console.log('values ', videos);
                     addHeaderTalentProfile(results);
                     addMainTalentProfileVideoSource(videos);
                     addOtherVideosSection(videos);
@@ -41,7 +46,7 @@ $('document').ready(() => {
             .done((response) => {
                 if (response.status === "success") {
                     const { results } = response;
-                    console.log('values ', results);
+                    jobList = results;
                     for (const job of results) {
                         const htmlContent = apprendOwnJobRecruiter(job);
                         $('#listed_jobs').append(htmlContent);
@@ -79,6 +84,29 @@ $('document').ready(() => {
                 }
             });
     }
+    else if (isRecruiterConnectionPage) {
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: '/api/retrieve_connection_list_recruiter',
+        })
+            .done((response) => {
+                if (response) {
+                    const { results } = response;
+                    if (!results || results.length === 0) {
+                        // apprendTextNoResultsToShow();
+                    } else {
+                        for (const connection of results) {
+                            const htmlContent = apprendRecruiterConnectionsSectionContent(
+                                connection
+                            );
+                            $('#connections_list').append(htmlContent);
+                        }
+                        checkMoreResults();
+                    }
+                }
+            });
+    }
     else {
         $.ajax({
             type: "GET",
@@ -112,7 +140,6 @@ $('document').ready(() => {
         })
             .done((response) => {
                 const userList = response.users_list;
-                console.log('response.users_list ', response.users_list);
                 const followingCount = userList.followers.length;
                 const viewsCount = userList.following.length;
                 const followersCount = userList.views.length;
@@ -201,33 +228,41 @@ addOtherVideosSection = (videos) => {
 
 validateNewJobCreation = (formData) => {
     let resultStatus = true;
+    let htmlContent = '';
     if (!formData.title) {
-        const htmlContent = apprendEmptyErrorCreateJob('Title cannot be empty');
+        htmlContent = apprendEmptyErrorCreateJob('Title cannot be empty');
         $('#form_errors').append(htmlContent);
+        resultStatus = false;
     }
     if (!formData.description) {
-        const htmlContent = apprendEmptyErrorCreateJob('Description cannot be empty');
+        htmlContent = apprendEmptyErrorCreateJob('Description cannot be empty');
         $('#form_errors').append(htmlContent);
+        resultStatus = false;
     }
     if (!formData.category) {
-        const htmlContent = apprendEmptyErrorCreateJob('Job must be assigned to a particular category');
+        htmlContent = apprendEmptyErrorCreateJob('Job must be assigned to a particular category');
         $('#form_errors').append(htmlContent);
+        resultStatus = false;
     }
     if (!formData.subcategory) {
-        const htmlContent = apprendEmptyErrorCreateJob('Job must be assigned to a particular sub-category');
+        htmlContent = apprendEmptyErrorCreateJob('Job must be assigned to a particular sub-category');
         $('#form_errors').append(htmlContent);
+        resultStatus = false;
     }
     if (!formData.country) {
-        const htmlContent = apprendEmptyErrorCreateJob('Job must be located in a country');
+        htmlContent = apprendEmptyErrorCreateJob('Job must be located in a country');
         $('#form_errors').append(htmlContent);
+        resultStatus = false;
     }
     if (!formData.state) {
-        const htmlContent = apprendEmptyErrorCreateJob('Job must be located in a state');
+        htmlContent = apprendEmptyErrorCreateJob('Job must be located in a state');
         $('#form_errors').append(htmlContent);
+        resultStatus = false;
     }
     if (!formData.city) {
-        const htmlContent = apprendEmptyErrorCreateJob('Job must be located in a city');
+        htmlContent = apprendEmptyErrorCreateJob('Job must be located in a city');
         $('#form_errors').append(htmlContent);
+        resultStatus = false;
     }
     return resultStatus;
 }
@@ -255,15 +290,16 @@ $('#submitNewJob').click(function () {
             data: submitFormData
         })
             .done(function (result) {
-                console.log('data saved result ', result);
+                if (result.status === 'success') {
+                    location.href = '/jobs';
+                }
             });
-        console.log('submitFormData ', submitFormData);
     }
 });
 
 cleanSubcategoryList = () => {
     $('#subcategory').empty();
-    $('#subcategory').append(`<option>Please select a category.</option>`);
+    $('#subcategory').append(`<option>-- Select one of the categories --</option>`);
 }
 
 cleanStateList = () => {
@@ -286,7 +322,6 @@ $('#category').change(function () {
                 dataType: "json",
                 type: "get",
                 success: function (response) {
-                    console.log('response subcategories ', response);
                     if (response) {
                         response.forEach((sub) => {
                             const htmlContent = apprendOwnJobSubcategoriesRecruiter(sub);
@@ -333,5 +368,65 @@ $('#state').change(function () {
                 };
             }
         });
+    }
+});
+
+function sortJobsArray(array, order = 'desc') {
+    if (order === 'asc') {
+        return array.sort(function (a, b) { return b.creation_timestamp - a.creation_timestamp });
+    }
+    return array.sort(function (a, b) { return a.creation_timestamp - b.creation_timestamp });
+}
+
+function cleanJobsPanel() {
+    $('#listed_jobs').html('');
+}
+
+function checkMoreResults() {
+    if ($($('.scrollbar-without-scroll > #connections_list')[0]).height() > $($('.scrollbar-without-scroll')[0]).parent().height()) {
+        const htmlContent = apprendViewMoreListConnectionsRecruiter();
+        $('#connections_list').append(htmlContent);
+    }
+}
+
+function advanceConnectionList() {
+    $('.scrollbar-without-scroll').animate({ scrollTop: 300 }, 700, 'swing', function () { });
+}
+
+$('.scrollbar-without-scroll').scroll(function () {
+    console.log('scroll called');
+    console.log('scroll top ', $(this).scrollTop());
+    if (!$(this).scrollTop()) {
+        $('#more_results_connections').show();
+    } else {
+        $('#more_results_connections').hide();
+    }
+});
+
+$('#selectbasic').change(function () {
+    if (isRecruiterJobsInformationPage) {
+        const optionSelected = $(this).val();
+        const copyOfTheJobListToSort = Array.from(jobList);
+        if (optionSelected === '2') {
+            const sortedJobs = sortJobsArray(copyOfTheJobListToSort, 'asc');
+            cleanJobsPanel();
+            for (const job of sortedJobs) {
+                const htmlContent = apprendOwnJobRecruiter(job);
+                $('#listed_jobs').append(htmlContent);
+            }
+        } else if (optionSelected === '3') {
+            const sortedJobs = sortJobsArray(copyOfTheJobListToSort, 'desc');
+            cleanJobsPanel();
+            for (const job of sortedJobs) {
+                const htmlContent = apprendOwnJobRecruiter(job);
+                $('#listed_jobs').append(htmlContent);
+            }
+        } else {
+            cleanJobsPanel();
+            for (const job of jobList) {
+                const htmlContent = apprendOwnJobRecruiter(job);
+                $('#listed_jobs').append(htmlContent);
+            }
+        }
     }
 });

@@ -130,8 +130,8 @@ function apprendOwnJobRecruiter(job) {
                 <span class="innerCountry">${job.country}</span>,
                 <span class="innerState">${job.state}</span>,
                 <span class="innerCity">${job.city}</span></p>
-            <p>${job.description}</p>
-            <p style="text-align: right;" class="pega-derecha timeago-maketime">${job.creation_time}</p>
+            <p style="text-align: justify;">${job.description}</p>
+            <p style="text-align: right;" class="pega-derecha timeago-maketime" data-time_mark="${job.creation_timestamp}">${job.creation_time}</p>
         </div>`
     );
 }
@@ -158,7 +158,7 @@ function apprendInnerCategory(key, value) {
 
 function apprendOwnJobSubcategoriesRecruiter(subcategory) {
     return (
-        `<option value='${subcategory.id}'>${subcategory.name}</option>`
+        `<option value='${subcategory._id}'>${subcategory.name}</option>`
     );
 }
 
@@ -171,5 +171,36 @@ function apprendSelectableStateJobCreationRecruiter(state) {
 function apprendSelectableCityJobCreationRecruiter(city) {
     return (
         `<option value="${city.value}">${city.label}</option>`
+    );
+}
+
+function apprendRecruiterConnectionsSectionContent(connection) {
+    return (
+        `<div class="row" style="padding:2%;">
+            <div class="col-md-2">
+                <img 
+                    src="/api/assets/images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg" 
+                    style="width: 70%; height: 70%; border-radius: 50%; -webkit-border-radius:50%; -moz-border-radius: 50%;"
+                >
+            </div>
+            <div class="col-md-6" style="padding-top: 1%;">
+                Nombre</br>
+                Talent categor, subcategory or recruiter type
+            </div>
+            <div class="col-md-2" style="text-align: center;">
+                <img src="/img/comment.svg" style="width: 2.5rem;padding-top: 15%;">
+            </div>
+            <div class="col-md-2" style="padding-top: 1%;">
+                <a>Remove</br>Connection</a>
+            </div>
+        </div>`
+    )
+}
+
+function apprendViewMoreListConnectionsRecruiter() {
+    return (
+        `<span id="more_results_connections" style='position:absolute;bottom:15px;left:47%;color:white;background-color:#ccc;text-align:center;font-weight:bold;padding:1%;'>
+            <p style='margin:0px;' onclick="advanceConnectionList()">Load more...</p>
+        </span>`
     );
 }

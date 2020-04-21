@@ -29,6 +29,8 @@ Route::get('/home-oportunities', 'DashboardController@homeTalent')->name('hoport
 Route::get('/talent-preview/{id}','HomeController@showPreviewTalentProfile')->middleware([CheckEntrance::class, CheckAuthentication::class]);
 Route::get('/jobs','HomeController@showRecruiterJobs')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('jobs');
 Route::get('/create-job','HomeController@showCreateJobRecruiter')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('create_new_job');
+Route::get('/connections','HomeController@showConnectionsScreen')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('view_connections');
+Route::get('/conversations','HomeController@showConversationsScreen')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('view_conversations');
 
 Route::post('/validate', 'PublicoController@validateEntrance');
 Route::post('/home', 'HomeController@iniciarSesion');

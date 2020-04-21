@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use App\VideoStream;
+use App\Data;
 // use Illuminate\Storage;
 
 /*
@@ -40,6 +42,22 @@ $cityList = array(
     array('label' => 'Denmark', 'value' => 4, 'state' => '4', 'state_name' => 'Denmark'),
     array('label' => 'Iceland', 'value' => 5, 'state' => '5', 'state_name' => 'Iceland'),
     array('label' => 'Germany', 'value' => 6, 'state' => '6', 'state_name' => 'Germany'),
+);
+
+$recruiterJobs = array(
+    array(
+        'title' => 'Dispatcher',
+        'description' => 'Is a dispatcher that dispatch dispatches for all of the dispatched people out there',
+        'requirements' => 'ABC',
+        'category' => 'music',
+        'subcategory' => 1,
+        'country' => 'Finland',
+        'state' => 'Finland',
+        'city' => 'Finland',
+        'job_type' => 'full-time',
+        'level' => 'intermediate',
+        'creation_time' => date("Y-m-d H:i:s.u"),
+    )
 );
 
 $categoryList = array(
@@ -267,17 +285,59 @@ Route::get('mock_retrieve_talent_complete_information', function(Request $reques
     );
 });
 
-Route::get('mock_retrieve_own_jobs', function(Request $request) {
-    $results = array(
-        array(
-            'title' => 'Dispatcher',
-            'country' => 'Finland',
-            'state' => 'Finland',
-            'city' => 'Finland',
-            'description' => 'Is a dispatcher that dispatch dispatches for all of the dispatched people out there',
-            'creation_time' => '24 July',
-        ),
-    );
+Route::get('mock_retrieve_own_jobs', function(Request $request) use (
+    $recruiterJobs, 
+    $countryList, 
+    $stateList,
+    $cityList) {
+    $recruiterJobs = DB::table('data'
+        )->where([
+            ['is_job', 'true'],
+        ])->get();
+    $results = array();
+    foreach($recruiterJobs as $job) {
+        $object = new stdClass();
+        $object->title = $job->job_title;
+        $object->description = $job->job_description;
+        $object->country = $job->job_country;
+        $object->state = $job->job_state;
+        $object->city = $job->job_city;
+        $object->creation_time = $job->job_creation_time;
+        array_push($results, $object);
+    }
+    foreach($results as $job) {
+        $countryId = $job->country;
+        $stateId = $job->state;
+        $cityId = $job->city;
+        $createdAt = $job->creation_time;
+        $country = array_filter(
+            $countryList,
+            function ($e) use (&$countryId) {
+                return $e['value'] == $countryId;
+            }
+        );
+        $state = array_filter(
+            $stateList,
+            function ($e) use (&$stateId) {
+                return $e['value'] == $stateId;
+            }
+        );
+        $city = array_filter(
+            $cityList,
+            function ($e) use (&$cityId) {
+                return $e['value'] == $cityId;
+            }
+        );
+        $job->creation_timestamp = strtotime($job->creation_time);
+        $createdAt = Carbon::parse($createdAt);
+        $job->creation_time = $createdAt->diffForHumans();
+        $country = array_values($country)[0];
+        $state = array_values($state)[0];
+        $city = array_values($city)[0];
+        $job->country = $country['label'];
+        $job->state = $state['label'];
+        $job->city = $city['label'];
+    }
     return json_encode(
         array(
             'status' => 'success', 
@@ -285,4 +345,157 @@ Route::get('mock_retrieve_own_jobs', function(Request $request) {
             'results' => $results
         )
     );
+});
+
+Route::post('mock_store_jobs', function(Request $request) use ($recruiterJobs) {
+    $jobData = $request->all();
+    $newJob = array(
+        'is_job' => "true",
+        'job_title' => $jobData['title'],
+        'job_description' => $jobData['description'],
+        'job_requirements' => $jobData['requirements'],
+        'job_category' => $jobData['category'],
+        'job_subcategory' => strval($jobData['subcategory']),
+        'job_country' => $jobData['country'],
+        'job_state' => $jobData['state'],
+        'job_city' => $jobData['city'],
+        'job_type' => $jobData['job_type'],
+        'level' => $jobData['level']
+    );
+    $dbResult = Data::insert($newJob);
+    return json_encode(array(
+        'status' => 'success',
+        'errors' => [], 
+        'results' => $dbResult
+    ));
+});
+
+Route::get('retrieve_connection_list_recruiter', function(Request $request) {
+    return json_encode(array(
+        'status' => 'success',
+        'errors' => [], 
+        'results' 
+            => array(
+                array(
+                    'email' => 'b@gmail.com', 
+                    'name' => 'Le Blue-dijon 1', 
+                    'category' => 'Music',
+                    'subcategory' => 'Rock',
+                    'recruiter_type' => NULL,
+                    'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+                ),
+                array(
+                    'email' => 'a@gmail.com', 
+                    'name' => 'Le Blue-dijon 2', 
+                    'category' => 'Music',
+                    'subcategory' => 'Rock',
+                    'recruiter_type' => NULL,
+                    'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+                ),
+                array(
+                    'email' => 'c@gmail.com', 
+                    'name' => 'Le Blue-dijon 3', 
+                    'category' => 'Music',
+                    'subcategory' => 'Rock',
+                    'recruiter_type' => NULL,
+                    'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+                ),
+                array(
+                    'email' => 'd@gmail.com', 
+                    'name' => 'Le Blue-dijon 4', 
+                    'category' => 'Music',
+                    'subcategory' => 'Rock',
+                    'recruiter_type' => NULL,
+                    'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+                ),
+                array(
+                    'email' => 'e@gmail.com', 
+                    'name' => 'Le Blue-dijon 5', 
+                    'category' => 'Music',
+                    'subcategory' => 'Rock',
+                    'recruiter_type' => NULL,
+                    'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+                ),
+                array(
+                    'email' => 'f@gmail.com 6', 
+                    'name' => 'Le Blue-dijon', 
+                    'category' => 'Music',
+                    'subcategory' => 'Rock',
+                    'recruiter_type' => NULL,
+                    'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+                ),
+                array(
+                    'email' => 'g@gmail.com', 
+                    'name' => 'Le Blue-dijon 7', 
+                    'category' => 'Music',
+                    'subcategory' => 'Rock',
+                    'recruiter_type' => NULL,
+                    'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+                ),
+                array(
+                    'email' => 'h@gmail.com', 
+                    'name' => 'Le Blue-dijon 8', 
+                    'category' => 'Music',
+                    'subcategory' => 'Rock',
+                    'recruiter_type' => NULL,
+                    'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+                ),
+                array(
+                    'email' => 'i@gmail.com', 
+                    'name' => 'Le Blue-dijon 9', 
+                    'category' => 'Music',
+                    'subcategory' => 'Rock',
+                    'recruiter_type' => NULL,
+                    'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+                ),
+                array(
+                    'email' => 'j@gmail.com', 
+                    'name' => 'Le Blue-dijon 10', 
+                    'category' => 'Music',
+                    'subcategory' => 'Rock',
+                    'recruiter_type' => NULL,
+                    'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+                ),
+                array(
+                    'email' => 'k@gmail.com', 
+                    'name' => 'Le Blue-dijon 11', 
+                    'category' => 'Music',
+                    'subcategory' => 'Rock',
+                    'recruiter_type' => NULL,
+                    'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+                ),
+                array(
+                    'email' => 'l@gmail.com', 
+                    'name' => 'Le Blue-dijon 12', 
+                    'category' => 'Music',
+                    'subcategory' => 'Rock',
+                    'recruiter_type' => NULL,
+                    'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+                ),
+                array(
+                    'email' => 'm@gmail.com', 
+                    'name' => 'Le Blue-dijon 13', 
+                    'category' => 'Music',
+                    'subcategory' => 'Rock',
+                    'recruiter_type' => NULL,
+                    'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+                ),
+                array(
+                    'email' => 'n@gmail.com', 
+                    'name' => 'Le Blue-dijon 14', 
+                    'category' => 'Music',
+                    'subcategory' => 'Rock',
+                    'recruiter_type' => NULL,
+                    'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+                ),
+                array(
+                    'email' => 'o@gmail.com', 
+                    'name' => 'Le Blue-dijon 15', 
+                    'category' => 'Music',
+                    'subcategory' => 'Rock',
+                    'recruiter_type' => NULL,
+                    'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+                ),
+            )
+    ));
 });

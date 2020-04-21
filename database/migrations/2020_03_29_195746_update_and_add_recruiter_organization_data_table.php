@@ -15,9 +15,9 @@ class UpdateAndAddRecruiterOrganizationDataTable extends Migration
     {
         // Add recruiter organization fields
         Schema::table('data', function (Blueprint $table) {
-            $table->string('org_name');
-            $table->string('org_website');
-            $table->string('org_phone');
+            $table->string('org_name')->nullable();
+            $table->string('org_website')->nullable();
+            $table->string('org_phone')->nullable();
         });
     }
 

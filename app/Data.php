@@ -27,6 +27,18 @@ class Data extends Model
         'criteria_age_range',
         'criteria_genre',
         'criteria_level',
+        'is_job',
+        'job_title',
+        'job_description',
+        'job_requirements',
+        'job_category',
+        'job_subcategory',
+        'job_country',
+        'job_state',
+        'job_city',
+        'job_type',
+        'job_level',
+        'job_creation_time'
     ];
 
     

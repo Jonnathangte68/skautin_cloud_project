@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Repositories\User;
+use DB;
 // use App\Repositories\Data;
 use App\Jobs\BinformationJob;
 use App\Data;
@@ -105,6 +106,14 @@ class HomeController extends Controller
 
     public function showCreateJobRecruiter() {
         return view('new_refactor.vacant_create');
+    }
+
+    public function showConnectionsScreen() {
+        return view('new_refactor.connections_list');
+    }
+
+    public function showConversationsScreen() {
+        return view('new_refactor.chat_window');
     }
 
     public function getCountriesAjax(Request $request, Response $response) {

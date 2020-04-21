@@ -59,6 +59,7 @@
     <label class="col-md-12 control-label" for="subcategory">Subcategory</label>
     <div class="col-md-12">
         <select id="subcategory" name="subcategory" class="form-control">
+            <option value="">-- Select one of the categories --</option>
         </select>
     </div>
     </div>
@@ -85,7 +86,7 @@
     <label class="col-md-12 control-label" for="state">State</label>
     <div class="col-md-12">
         <select id="state" name="state" class="form-control">
-            <option>Please select a country.</option>
+            <option value="">-- Please select a country. --</option>
         </select>
     </div>
     </div>
@@ -95,7 +96,7 @@
     <label class="col-md-12 control-label" for="city">City</label>
     <div class="col-md-12">
         <select id="city" name="city" class="form-control">
-            <option>Please select a state.</option>
+            <option value="">-- Please select a state. --</option>
         </select>
     </div>
     </div>
@@ -111,6 +112,16 @@
     <label class="col-md-12 control-label" for="job_type">Type</label>
     <div class="col-md-12">
         <select id="job_type" name="job_type" class="form-control">
+            <option value="">-- Select employment type --</option>
+            <option value="full-time">Full time</option>
+            <option value="part-time">Part time</option>
+            <option value="casual">Casual</option>
+            <option value="fixed-term">Fixed term</option>
+            <option value="contract">Contract</option>
+            <option value="apprentice">Apprentice</option>
+            <option value="trainee">Trainee</option>
+            <option value="commission">Commission</option>
+            <option value="piece-rate">Piece rate</option>
         </select>
     </div>
     </div>
@@ -120,6 +131,10 @@
     <label class="col-md-12 control-label" for="level">Level Required</label>
     <div class="col-md-12">
         <select id="level" name="level" class="form-control">
+            <option value="">-- Select level --</option>
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="senior">Senior</option>
         </select>
     </div>
     </div>

@@ -12,8 +12,8 @@
             <div class="col-sm-8 scrollbar-without-scroll" style="border: 1px solid #E6E6E6;min-height:100%;max-height: 100%;background-color: #FFFFFF;padding-left: 2%;padding-right: 2%;">
                 @yield('left_box')
             </div>
-            <div class="col-sm-4" style="padding-left: 2%;min-height:100%;height:100%;">
-                <div class="scrollbar-without-scroll" style="border: 1px solid #E6E6E6;min-height:100%;max-height: 100%;background-color: #FFFFFF;padding-left: 2%;padding-right: 2%;">
+            <div class="col-sm-4" style="padding-left: 0%;min-height:100%;height:100%;">
+                <div class="scrollbar-without-scroll" style="border: 1px solid #E6E6E6;min-height:100%;max-height: 100%;background-color: #FFFFFF;padding-left: 2%;padding-right: 2%;border-left-style:none!important;">
                 @yield('right_box')
                 </div>
             </div>

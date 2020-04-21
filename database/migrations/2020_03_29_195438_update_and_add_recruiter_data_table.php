@@ -15,9 +15,9 @@ class UpdateAndAddRecruiterDataTable extends Migration
     {
         // Add recruiter fields
         Schema::table('data', function (Blueprint $table) {
-            $table->json('criteria_age_range');
-            $table->json('criteria_genre');
-            $table->json('criteria_level');
+            $table->json('criteria_age_range')->nullable();
+            $table->json('criteria_genre')->nullable();
+            $table->json('criteria_level')->nullable();
         });
     }
 

@@ -15,7 +15,7 @@ class UpdateAndAddCityDataTable extends Migration
     {
         // Add missing city field
         Schema::table('data', function (Blueprint $table) {
-            $table->string('city');
+            $table->string('city')->nullable();
         });
     }
 

@@ -75,8 +75,8 @@
 			<img src="{{ URL::asset('img/bell.png') }}" class="img-navbar-menu"></a></li>
           <!--<li><a href="#"><i class="fas fa-bell" class="img-navbar-menu" style="color:#FFD700;"></i></a></li>-->
           <li class="hide-on-mobile"><a href="{{route('jobs')}}"><img src="{{ URL::asset('img/menu_3.jpg') }}" class="img-navbar-menu"></a></li>
-          <li class="hide-on-mobile"><a href="{{route('connectios_recruiter')}}"><img src="{{ URL::asset('img/menu_1.png') }}" class="img-navbar-menu"></a></li>
-          <li class="hide-on-mobile"><a href="{{route('dash_chatr')}}"><img src="{{ URL::asset('img/menu_2.png') }}" class="img-navbar-menu"></a></li>
+          <li class="hide-on-mobile"><a href="{{route('view_connections')}}"><img src="{{ URL::asset('img/menu_1.png') }}" class="img-navbar-menu"></a></li>
+          <li class="hide-on-mobile"><a href="{{route('view_conversations')}}"><img src="{{ URL::asset('img/menu_2.png') }}" class="img-navbar-menu"></a></li>
           <!--<li><a href="#"><img src="briefcase.png" style="width: 28px;"></a></li>-->
           <li class="dropdown hide-on-mobile"><a data-toggle="dropdown" class="no-backgroundblackstrange link-hand"><img src="{{ URL::asset('img/menu_4.png') }}" class="img-navbar-menu"></a>
 			<ul class="dropdown-menu">
