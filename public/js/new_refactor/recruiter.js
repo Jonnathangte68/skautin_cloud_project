@@ -106,6 +106,27 @@ $('document').ready(() => {
                     }
                 }
             });
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: '/api/retrieve_connection_suggestions',
+        })
+            .done((response) => {
+                if (response) {
+                    const { results } = response;
+                    if (!results || results.length === 0) {
+                        const htmlContent = apprendTextNoConnectionsSuggestionsToShow();
+                        $($('.scrollbar-without-scroll')[1]).append(htmlContent);
+                    } else {
+                        for (const suggestion of results) {
+                            const htmlContent = apprendRecruiterSuggestionSectionContent(
+                                suggestion
+                            );
+                            $($('.scrollbar-without-scroll')[1]).append(htmlContent);
+                        }
+                    }
+                }
+            });
     }
     else {
         $.ajax({

@@ -179,13 +179,13 @@ function apprendRecruiterConnectionsSectionContent(connection) {
         `<div class="row" style="padding:2%;">
             <div class="col-md-2">
                 <img 
-                    src="/api/assets/images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg" 
+                    src="/api/assets/${connection.picture_uri}" 
                     style="width: 70%; height: 70%; border-radius: 50%; -webkit-border-radius:50%; -moz-border-radius: 50%;"
                 >
             </div>
             <div class="col-md-6" style="padding-top: 1%;">
-                Nombre</br>
-                Talent categor, subcategory or recruiter type
+                ${connection.name}</br>
+                ${(connection.recruiter_type ? connection.recruiter_type : connection.category + ', ' + connection.subcategory)}
             </div>
             <div class="col-md-2" style="text-align: center;">
                 <img src="/img/comment.svg" style="width: 2.5rem;padding-top: 15%;">
@@ -197,10 +197,33 @@ function apprendRecruiterConnectionsSectionContent(connection) {
     )
 }
 
+function apprendRecruiterSuggestionSectionContent(suggestion) {
+    return (
+        `<div class="row" style="padding:2%;">
+            <div class="col-md-3" style="padding-right:0px !important;">
+                <img 
+                    src="/api/assets/${suggestion.picture_uri}" 
+                    style="width: 70%; height: 70%; border-radius: 50%; -webkit-border-radius:50%; -moz-border-radius: 50%;"
+                >
+            </div>
+            <div class="col-md-9" style="padding-top: 1%;padding-left:0px !important;">
+                ${suggestion.name}</br>
+                ${(suggestion.recruiter_type ? suggestion.recruiter_type : suggestion.category + ', ' + suggestion.subcategory)}
+            </div>
+        </div>`
+    )
+}
+
 function apprendViewMoreListConnectionsRecruiter() {
     return (
         `<span id="more_results_connections" style='position:absolute;bottom:15px;left:47%;color:white;background-color:#ccc;text-align:center;font-weight:bold;padding:1%;'>
             <p style='margin:0px;' onclick="advanceConnectionList()">Load more...</p>
         </span>`
     );
+}
+
+function apprendTextNoConnectionsSuggestionsToShow() {
+    return (
+        `</br><p style="text-align:center;">Nothing to show, please try adding another category/subcategory.</p>`
+    )
 }

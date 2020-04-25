@@ -18,9 +18,8 @@ use App\Repositories\Pagina;
 |
 */
 
-Route::get('/', 'PublicoController@authenticateGuest')->middleware(RedirectAlreadyMet::class);
-Route::get('/skauting-access/{tok}', 'PublicoController@validateToken');
-Route::get('/landing', 'PublicoController@welcome')->middleware([CheckEntrance::class, RedirectIfAuthenticated::class]);
+Route::get('/', 'HomeController@authenticateGuest')->middleware(RedirectAlreadyMet::class);
+Route::get('/landing', 'HomeController@welcome')->middleware([CheckEntrance::class, RedirectIfAuthenticated::class]);
 Route::get('/new-talent-registration', 'HomeController@showNewTalentReg')->middleware([CheckEntrance::class, RedirectIfAuthenticated::class]);
 Route::get('/new-recruiter-registration', 'HomeController@showNewRecruiterReg')->middleware([CheckEntrance::class, RedirectIfAuthenticated::class]);
 Route::get('/home-prospects', 'DashboardController@homeRecruiter')->middleware([CheckEntrance::class, CheckAuthentication::class]);
@@ -31,8 +30,9 @@ Route::get('/jobs','HomeController@showRecruiterJobs')->middleware([CheckEntranc
 Route::get('/create-job','HomeController@showCreateJobRecruiter')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('create_new_job');
 Route::get('/connections','HomeController@showConnectionsScreen')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('view_connections');
 Route::get('/conversations','HomeController@showConversationsScreen')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('view_conversations');
+Route::get('/settings/{option?}', 'HomeController@showSettingsAccount')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('view_settings');
 
-Route::post('/validate', 'PublicoController@validateEntrance');
+Route::post('/validate', 'HomeController@validateEntrance');
 Route::post('/home', 'HomeController@iniciarSesion');
 
 

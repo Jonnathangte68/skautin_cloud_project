@@ -11,14 +11,41 @@ use App\Jobs\BinformationJob;
 use App\Data;
 use Artisan;
 use \App\UserSession;
+use Illuminate\Support\Facades\Session;
 
 class HomeController extends Controller
 {
-    protected $user;
+    public function authenticateGuest() {
+        return view('new_refactor.welcome_from_the_dark_internet');
+    }
 
+    public function validateEntrance (Request $request) {
+        $userId = strval($request->input("userID"));
+        if ($userId === "000000000003") {
+            $request->session()->put('authenticatedEntrance', 'true');
+            return json_encode(
+                array(
+                    'status' => true, 
+                    'result' => 'success'
+                )
+            );
+        } else {
+            return json_encode(
+                array(
+                    'status' => false, 
+                    'result' => 'error'
+                )
+            );
+        }  
+    }
 
-    public function __construct(User $user) {
-        $this->user = $user;
+    public function welcome() {
+        return response()
+            ->view('welcome')
+            ->header('Cache-Control','nocache, no-store, max-age=0, must-revalidate')
+            ->header('Pragma','no-cache')
+            ->header('Expires','Fri, 01 Jan 1990 00:00:00 GMT');
+        // return view('welcome');
     }
 
     public function iniciarSesion(Request $request)
@@ -26,16 +53,16 @@ class HomeController extends Controller
         $data = $request->only(['username', 'password']);
         if (!$data['username'] || !$data['password']) {
             $request->session()->flash('status', 'Invalid username and/or password combination, please try again.');
-            return redirect()->action('PublicoController@welcome');
+            return redirect()->action('HomeController@welcome');
         }
         $user = \App\Data::where('email', $data['username'])->first();
         if (!$user) {
             $request->session()->flash('status', 'Invalid username and/or password combination, please try again.');
-            return redirect()->action('PublicoController@welcome');
+            return redirect()->action('HomeController@welcome');
         }
         if ($user->password !== $data['password']) {
             $request->session()->flash('status', 'Invalid username and/or password combination, please try again.');
-            return redirect()->action('PublicoController@welcome');
+            return redirect()->action('HomeController@welcome');
         }
         // Authenticate session
         $sessionUser = new UserSession($user->name, $user->email, $user->user_type);
@@ -78,14 +105,14 @@ class HomeController extends Controller
             $dataDAO->criteria_level = json_encode($storeData['levels']);
             $dataDAO->save();
             $request->session()->flash('suc', 'Successful User Registration, Instructions to access your account have been sent to you by email');
-            return redirect()->action('PublicoController@welcome');
+            return redirect()->action('HomeController@welcome');
         }
 
         // Save talent
         $dataDAO->level = $storeData['level'];
         $dataDAO->save();
         $request->session()->flash('suc', 'Successful User Registration, Instructions to access your account have been sent to you by email');
-        return redirect()->action('PublicoController@welcome');
+        return redirect()->action('HomeController@welcome');
     }
 
     public function showNewTalentReg() {
@@ -114,6 +141,25 @@ class HomeController extends Controller
 
     public function showConversationsScreen() {
         return view('new_refactor.chat_window');
+    }
+
+    public function showSettingsAccount() {
+        return view('new_refactor.settings_account');
+    }
+
+    public function deleteAccount() {
+        error_log('calls home controller');
+        Session::put('authenticatedUser', 'false');
+        Session::save();
+        return json_encode('result from home controller');
+    }
+
+    public function logOut(Request $request) {
+        Artisan::call('cache:clear');
+        // $request->session()->invalidate();
+        $request->session()->put('authenticatedUser', 'false');
+        // return redirect('/');
+        return view('new_refactor.logout_page');
     }
 
     public function getCountriesAjax(Request $request, Response $response) {
@@ -161,13 +207,6 @@ class HomeController extends Controller
     public function getSubsXCateg($categoria) {
         $model = new Data();
         return json_encode($model->getSubsXcategory($categoria));
-    }
-
-    public function logOut(Request $request) {
-        Artisan::call('cache:clear');
-        // $request->session()->invalidate();
-        $request->session()->put('authenticatedUser', 'false');
-        return redirect('/');
     }
 
     protected function generateRandomString($length = 35) {

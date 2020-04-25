@@ -27,6 +27,7 @@
 			display: none;
 		}
 	</style>
+	<style>body {overflow-x: hidden !important;}</style>
 </head>
 <body>
 
@@ -82,13 +83,13 @@
 			<ul class="dropdown-menu">
 					<li><a href="/home-prospects"><i class="fas fa-home"></i>&nbsp;&nbsp;HOME</a></li>
 					<li class="divider"></li>
-		    	<li><a href="{{ route('rec_account_settings') }}/invite-fb">Invite friends from Fb</a></li>
+		    	<li><a href="{{ route('view_settings') }}/invite-fb">Invite friends from Fb</a></li>
 		    	<li class="divider"></li>
-		    	<li><a href="{{ route('rec_account_settings') }}/global-settings">Settings</a></li>
+		    	<li><a href="{{ route('view_settings') }}/global-settings">Settings</a></li>
 		    	<li class="divider"></li>
-		    	<li><a href="{{ route('rec_account_settings') }}/account-management">Account</a></li>
+		    	<li><a href="{{ route('view_settings') }}/account-management">Account</a></li>
 		    	<li class="divider"></li>
-		    	<li><a href="{{ route('rec_account_settings') }}/help">Help</a></li>
+		    	<li><a href="{{ route('view_settings') }}/help">Help</a></li>
 		    	<li class="divider"></li>
 		    	<li><a href="{{ route('logOut') }}">Log out</a></li>
 		  	</ul>

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\VideoStream;
 use App\Data;
+use App\Http\Controllers\HomeController;
 // use Illuminate\Storage;
 
 /*
@@ -498,4 +499,33 @@ Route::get('retrieve_connection_list_recruiter', function(Request $request) {
                 ),
             )
     ));
+});
+
+Route::get('retrieve_connection_suggestions', function(Request $request) {
+    return json_encode([]);
+});
+
+Route::get('retrieve_connection_suggestions', function(Request $request) {
+    return json_encode(
+        array(
+            'status' => 'success',
+            'errors' => [], 
+            'results' => array(
+                array(
+                    'email' => 'o@gmail.com', 
+                    'name' => 'Le Blue-dijon 15', 
+                    'category' => 'Music',
+                    'subcategory' => 'Rock',
+                    'recruiter_type' => NULL,
+                    'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+                ),
+            ),
+        )
+    );
+});
+
+Route::post('delete-user', function(Request $request) {
+    error_log('user deleted');
+    $controller = new HomeController;
+    return json_encode($controller->deleteAccount());
 });
