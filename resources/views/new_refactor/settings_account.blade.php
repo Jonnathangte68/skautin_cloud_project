@@ -162,19 +162,6 @@
     <script type="text/javascript" src="{{ URL::asset('js/settings_form.js') }}"></script>
     <script src="https://unpkg.com/sweetalert2@7.18.0/dist/sweetalert2.all.js"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
-            $('.panel-hidden-notifications').hide();
-
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-        });
-    </script>
-
-    <script type="text/javascript">
 
         $('#enlacesettingslk').click(function() {
             if ($('#settingslk').is(':visible')) {
@@ -202,7 +189,7 @@
             } else {
                 $('#helplk').css({'height':'0px','display':'block'});
                 $('#helplk').animate({height: 'auto'}, "slow", function() {$('#helplk').css({'height':'auto'});});
-                $('#settingslk').animate({height: '0px'}, "slow", function() { $('#settingslk'); });
+                $('#settingslk').animate({height: '0px'}, "slow", function() { $('#settingslk').hide(); });
                 $('#accountlk').animate({height: '0px'}, "slow", function() { $('#accountlk').hide(); });
             }
         });
@@ -317,6 +304,11 @@
     <!-- Facebook scripts -->
     <script>
         $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
             $.ajaxSetup({ cache: true }); // since I am using jquery as well in my app
             $.getScript('//connect.facebook.net/en_US/sdk.js', function () {
                 // initialize facebook sdk
@@ -368,28 +360,21 @@
                 form.submit();
             }
 
-
-            /* Notification settings */
-
-            $.ajax({
-                method: "GET",
-                url: "{{route('get_statuses_tnotifications_now')}}"
-            })
-                .done(function( msg ) {
-                    console.log(msg);
-                    if (!msg || msg == undefined || msg == "" || msg == 0 || msg==null) {
-                        console.log("click to all");
-                        $("#nt1").trigger('click');
-                        $("#nt2").trigger('click');
-                        $("#nt3").trigger('click');
-                    }else {
-                        console.log("no click");
-                        console.log(msg);
-                    }
-                });
-
-
-        })
+            if (window.location.href.includes("global-settings")) {
+                $('#settingslk').css({'height':'0px','display':'block'});
+                $('#settingslk').animate({height: 'auto'}, "slow", function() { $('#settingslk').css({'height':'auto'}); });
+            } else if (window.location.href.includes("account-management")) {
+                $('#accountlk').css({'height':'0px','display':'block'});
+                $('#accountlk').animate({height: 'auto'}, "slow", function() {$('#accountlk').css({'height':'auto'});});
+            } else if (window.location.href.includes("help")) {
+                $('#helplk').css({'height':'0px','display':'block'});
+                $('#helplk').animate({height: 'auto'}, "slow", function() {$('#helplk').css({'height':'auto'});});
+            }  else {
+                setTimeout(() => {
+                    $('#fb_invites').trigger('click');
+                }, 300);
+            }
+        });
 
     </script>
 @endsection

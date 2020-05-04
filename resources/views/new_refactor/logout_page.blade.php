@@ -18,12 +18,7 @@
 <body onload="redirect()">
     <script>
         function redirect() {
-            alert('gets executed!');
-            const replaceUrl = window.location.protocol + '//' + window.location.hostname;
-            history.replaceState(null, document.title, location.pathname + "#!/");
-            history.pushState(null, document.title, location.pathname);
-            history.replaceState(null, document.title, location.pathname);
-            location.replace(replaceUrl);
+            window.location.href = window.location.protocol + '//' + window.location.hostname + ((window.location.port) ? ':' + window.location.port : '');
         }
     </script>
 </body>

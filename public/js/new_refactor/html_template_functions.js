@@ -227,3 +227,46 @@ function apprendTextNoConnectionsSuggestionsToShow() {
         `</br><p style="text-align:center;">Nothing to show, please try adding another category/subcategory.</p>`
     )
 }
+
+function apprendConversationThread(thread) {
+    const { thread_id, message, user } = thread;
+    return (
+        `<div class="row" style="cursor:pointer;" onclick="loadThread('${String(thread_id)}', '${String(user.name)}', '${String(user.picture_uri)}')">
+            <div class="col-md-3">
+                    <img 
+                        src="/api/assets/${user.picture_uri}" 
+                        style="width: 70%; height: 70%; border-radius: 50%; -webkit-border-radius:50%; -moz-border-radius: 50%; padding-top: 10%;"
+                    >
+            </div>
+            <div class="col-md-9" style="padding-left:0px;">
+                <p style="margin-bottom:0px !important;">
+                    <b>
+                        ${user.name}
+                    </b>
+                    / ${(user.recruiter_type) ? user.recruiter_type : user.category + ' ' + user.subcategory}
+                </p>
+                <p style="width: 70%;white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${message}</p>
+                <span style="position:absolute;right:0px;bottom:10px;">3 days ago</span>
+            </div>
+        </div><br>`);
+}
+
+function apprendThreadBarRecruiter(id, name, picture) {
+    return (
+        `<div class="row">
+            <div class="col-md-2"><img src="/api/assets/${picture}" style="width: 70%; height: 70%; border-radius: 50%; -webkit-border-radius:50%; -moz-border-radius: 50%; padding-top: 10%;" /></div>
+            <div class="col-md-7" style="padding-top:3%;font-size: 2.3rem;padding-left:0px;">${name}</div>
+            <div class="col-md-3" style="padding-top:3%;font-size:2.4rem;">
+                <table>
+                    <tr style="text-align:right;">
+                        <td onclick="conversationSearchMessage()" style="width: 40%;display:inline;font-size:2.4rem;padding-left:5%;padding-right:5%;"><i class="fa fa-search"></i></td>
+                        <td onclick="conversationAttachFileMessage()" style="width: 40%;display:inline;font-size:2.4rem;padding-left:5%;padding-right:5%;"><img src="/img/attach.png" style="width: 22%;"></td>
+                        <td onclick="conversationShowOptionsMessage()" style="width: 40%;display:inline;font-size:2.4rem;padding-left:5%;padding-right:5%;">
+                            <i class="fa fa-ellipsis-v dropdown-toggle" aria-hidden="true"></i>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>`
+    );
+}

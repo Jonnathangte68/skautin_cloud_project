@@ -4,6 +4,7 @@ var isTalentProfilePage = false;
 var isRecruiterJobsInformationPage = false;
 var isRecruiterJobCreationPage = false;
 var isRecruiterConnectionPage = false;
+var isRecruiterConversationPage = false;
 var jobList = [];
 
 // Functions
@@ -15,6 +16,7 @@ $('document').ready(() => {
     isRecruiterJobsInformationPage = $('#is_recruiter_jobs_information_page') && $('#is_recruiter_jobs_information_page').val() == "true";
     isRecruiterJobCreationPage = $('#is_recruiter_job_creation_page') && $('#is_recruiter_job_creation_page').val() == "true";
     isRecruiterConnectionPage = $('#is_recruiter_connection_page') && $('#is_recruiter_connection_page').val() == "true";
+    isRecruiterConversationPage = $('#is_recruiter_conversations_page') && $('#is_recruiter_conversations_page').val() == "true";
 
 
     if (isTalentProfilePage) {
@@ -124,6 +126,22 @@ $('document').ready(() => {
                             );
                             $($('.scrollbar-without-scroll')[1]).append(htmlContent);
                         }
+                    }
+                }
+            });
+    } else if (isRecruiterConversationPage) {
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: '/api/retrieve_conversation_threads',
+        })
+            .done((response) => {
+                if (response) {
+                    const { results } = response;
+                    for (const thread of results) {
+                        const htmlContent = apprendConversationThread(thread);
+                        $('#conversation-threads').append(htmlContent);
+                        $($('#conversation-threads > .row')[0]).trigger('click');
                     }
                 }
             });
@@ -412,6 +430,27 @@ function checkMoreResults() {
 
 function advanceConnectionList() {
     $('.scrollbar-without-scroll').animate({ scrollTop: 300 }, 700, 'swing', function () { });
+}
+
+function loadThread(id, name, picture) {
+    const htmlContent = apprendThreadBarRecruiter(id, name, picture);
+    $($('.scrollbar-without-scroll')[0]).append(htmlContent);
+}
+
+function conversationSearchMessage() {
+    alert("One");
+}
+
+function conversationAttachFileMessage() {
+    alert("Two");
+}
+
+function conversationShowOptionsMessage() {
+    if ($('#chat-option-dropdown').css('display') === "none") {
+        $('#chat-option-dropdown').show();
+    } else {
+        $('#chat-option-dropdown').hide();
+    }
 }
 
 $('.scrollbar-without-scroll').scroll(function () {

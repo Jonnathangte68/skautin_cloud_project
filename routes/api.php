@@ -529,3 +529,67 @@ Route::post('delete-user', function(Request $request) {
     $controller = new HomeController;
     return json_encode($controller->deleteAccount());
 });
+
+Route::get('retrieve_conversation_threads', function(Request $request) {
+    // return json_encode(array(
+    //     'status' => 'success',
+    //     'errors' => [], 
+    //     'results' => array(
+    //         array(
+    //             'name' => 'Le Blue-dijon 1', 
+    //             'category' => 'Music',
+    //             'subcategory' => 'Rock',
+    //             'recruiter_type' => NULL,
+    //             'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg',
+    //             'thread_id' => 1,
+    //             'message_preview' => 'This was my last message send.'
+    //         ),
+    //         array(
+    //             'name' => 'Le Blue-dijon 2', 
+    //             'category' => 'Music',
+    //             'subcategory' => 'Rock',
+    //             'recruiter_type' => NULL,
+    //             'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg',
+    //             'thread_id' => 1,
+    //             'message_preview' => 'This was my last message send.'
+    //         ),
+    //         array(
+    //             'name' => 'Le Blue-dijon 3', 
+    //             'category' => 'Music',
+    //             'subcategory' => 'Rock',
+    //             'recruiter_type' => NULL,
+    //             'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg',
+    //             'thread_id' => 1,
+    //             'message_preview' => 'This was my last message send.'
+    //         ),
+    //     ),
+    // ));
+    $results = array();
+    $ctr = 1;
+    $threads = DB::table('conversation_thread')->select('*')->get();
+    foreach ($threads as $thread) {
+        array_push(
+            $results,
+            array(
+                'thread_id' => 1,
+                'message' => 'Test.',
+                'user' => array(
+                    'name' => "Le Blue-dijon {$ctr}", 
+                    'category' => 'Music',
+                    'subcategory' => 'Rock',
+                    'recruiter_type' => NULL,
+                    'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+                )
+            ),
+        );
+        $ctr += 1;
+    }
+    return json_encode(
+        array(
+            'status' => 'success',
+            'errors' => [], 
+            'results' => $results,
+        )
+    );
+    dd($users);
+});
