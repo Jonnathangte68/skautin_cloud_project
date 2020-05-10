@@ -49,6 +49,5 @@
 
 @section('scripts')
     @parent
-    <script type="text/javascript" src="/js/new_refactor/html_template_functions.js"></script>
 	<script type="text/javascript" src="/js/new_refactor/recruiter.js"></script>
 @endsection

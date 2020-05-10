@@ -97,7 +97,7 @@
         </ul>
 
 		  <div class="input-group search normal-bar-nav-search hide-on-mobile">
-			  <span class="fa fa-search"></span>
+			  <span id="search_action" class="fa fa-search"></span>
 			  <!--<input placeholder="Search term">-->
 			  <input id="prependedtext" name="prependedtext" class="form-control nav-advance-search-search" placeholder="Search talents, recruiters and Jobs" type="text"/>
 		  </div>
@@ -126,6 +126,8 @@
 				$('.list-menu-responsive').toggle( "slow", function() {});
 			});
 		</script>
+		<script type="text/javascript" src="/js/new_refactor/html_template_functions.js"></script>
+		<script type="text/javascript" src="/js/new_refactor/global.js"></script>
 		<!--<script type="text/javascript" src="{{ URL::asset('js/registration.js') }}"></script>-->
 		<!--<script type="text/javascript" src="{{ URL::asset('js/talent.js') }}"></script>-->
 		<!-- <script> Last script... </script> -->

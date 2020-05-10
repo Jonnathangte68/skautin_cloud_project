@@ -147,6 +147,10 @@ class HomeController extends Controller
         return view('new_refactor.settings_account');
     }
 
+    public function showSearchResults() {
+        return view('new_refactor.search_results');
+    }
+
     public function deleteAccount() {
         error_log('calls home controller');
         Session::put('authenticatedUser', 'false');

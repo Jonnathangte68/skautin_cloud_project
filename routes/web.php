@@ -31,6 +31,7 @@ Route::get('/create-job','HomeController@showCreateJobRecruiter')->middleware([C
 Route::get('/connections','HomeController@showConnectionsScreen')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('view_connections');
 Route::get('/conversations','HomeController@showConversationsScreen')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('view_conversations');
 Route::get('/settings/{option?}', 'HomeController@showSettingsAccount')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('view_settings');
+Route::get('/search', 'HomeController@showSearchResults')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('view_search_results');
 
 Route::post('/validate', 'HomeController@validateEntrance');
 Route::post('/home', 'HomeController@iniciarSesion');
@@ -108,7 +109,6 @@ Route::get('/profile', 'TalentController@showProfile')->name('profile_talento')-
 Route::get('/relations', 'TalentController@showConnections')->name('relations_talento')->middleware('cauth');
 Route::get('/settings', 'TalentController@showConfiguration')->name('conf_talento')->middleware('cauth');
 Route::get('/video-uploading', 'TalentController@uploadVideo')->name('video_uploading')->middleware('cauth');
-Route::get('/search', 'TalentController@simpleSearch')->name('simple_search')->middleware('cauth');
 Route::get('/account-settings/{option?}', 'TalentController@settingsAccount')->name('account_settings')->middleware('cauth');
 Route::get('/remove-connection/{id}', 'TalentoController@removeConnection')->name('remove_connection')->middleware('cauth');
 

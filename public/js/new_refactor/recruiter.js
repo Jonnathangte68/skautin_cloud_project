@@ -5,6 +5,7 @@ var isRecruiterJobsInformationPage = false;
 var isRecruiterJobCreationPage = false;
 var isRecruiterConnectionPage = false;
 var isRecruiterConversationPage = false;
+var isSettingsPage = false;
 var jobList = [];
 
 // Functions
@@ -17,6 +18,7 @@ $('document').ready(() => {
     isRecruiterJobCreationPage = $('#is_recruiter_job_creation_page') && $('#is_recruiter_job_creation_page').val() == "true";
     isRecruiterConnectionPage = $('#is_recruiter_connection_page') && $('#is_recruiter_connection_page').val() == "true";
     isRecruiterConversationPage = $('#is_recruiter_conversations_page') && $('#is_recruiter_conversations_page').val() == "true";
+    isSettingsPage = $('#is_settings_page') && $('#is_settings_page').val() == "true";
 
 
     if (isTalentProfilePage) {
@@ -145,8 +147,78 @@ $('document').ready(() => {
                     }
                 }
             });
-    }
-    else {
+    } else if (isSettingsPage) {
+        $('.panel-hidden-notifications').hide();
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajaxSetup({ cache: true }); // since I am using jquery as well in my app
+        $.getScript('//connect.facebook.net/en_US/sdk.js', function () {
+            // initialize facebook sdk
+            FB.init({
+                appId: '722008658215991', // replace this with your id
+                status: true,
+                cookie: true,
+                version: 'v2.8'
+            });
+
+            // attach login click event handler
+            $("#btn-login").click(function () {
+                FB.login(processLoginClick, { scope: 'public_profile,email,user_friends,pages_messaging', return_scopes: true });
+            });
+        });
+
+        // function to send uid and access_token back to server
+        // actual permissions granted by user are also included just as an addition
+        function processLoginClick(response) {
+            var uid = response.authResponse.userID;
+            var access_token = response.authResponse.accessToken;
+            var permissions = response.authResponse.grantedScopes;
+            var data = {
+                uid: uid,
+                access_token: access_token,
+                _token: '{{ csrf_token() }}', // this is important for Laravel to receive the data
+                permissions: permissions
+            };
+            postData("{{ url('/loginfb') }}", data, "post");
+        }
+
+        // function to post any data to server
+        function postData(url, data, method) {
+            method = method || "post";
+            var form = document.createElement("form");
+            form.setAttribute("method", method);
+            form.setAttribute("action", url);
+            for (var key in data) {
+                if (data.hasOwnProperty(key)) {
+                    var hiddenField = document.createElement("input");
+                    hiddenField.setAttribute("type", "hidden");
+                    hiddenField.setAttribute("name", key);
+                    hiddenField.setAttribute("value", data[key]);
+                    form.appendChild(hiddenField);
+                }
+            }
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        if (window.location.href.includes("global-settings")) {
+            $('#settingslk').css({ 'height': '0px', 'display': 'block' });
+            $('#settingslk').animate({ height: 'auto' }, "slow", function () { $('#settingslk').css({ 'height': 'auto' }); });
+        } else if (window.location.href.includes("account-management")) {
+            $('#accountlk').css({ 'height': '0px', 'display': 'block' });
+            $('#accountlk').animate({ height: 'auto' }, "slow", function () { $('#accountlk').css({ 'height': 'auto' }); });
+        } else if (window.location.href.includes("help")) {
+            $('#helplk').css({ 'height': '0px', 'display': 'block' });
+            $('#helplk').animate({ height: 'auto' }, "slow", function () { $('#helplk').css({ 'height': 'auto' }); });
+        } else {
+            setTimeout(() => {
+                $('#fb_invites').trigger('click');
+            }, 300);
+        }
+    } else {
         $.ajax({
             type: "GET",
             dataType: "json",
@@ -435,6 +507,35 @@ function advanceConnectionList() {
 function loadThread(id, name, picture) {
     const htmlContent = apprendThreadBarRecruiter(id, name, picture);
     $($('.scrollbar-without-scroll')[0]).append(htmlContent);
+    loadMessages(id);
+}
+
+function loadMessages(id) {
+    $.ajax({
+        url: "/api/retrieve_thread_messages",
+        dataType: "json",
+        data: {
+            thread_id: id,
+        },
+        type: "post",
+        success: function (response) {
+            const { results } = response;
+            if (results) {
+                results.forEach(msg => {
+                    if (msg.sender === "X") {
+                        const htmlContent = apprendMessageRecruiter(msg, 'left');
+                        $('#container-for-messages').append(htmlContent);
+                    } else {
+                        const htmlContent = apprendMessageRecruiter(msg, 'right');
+                        $('#container-for-messages').append(htmlContent);
+                    }
+                });
+            }
+        },
+        error: function (xhr) {
+            //console.log(xhr);
+        }
+    });
 }
 
 function conversationSearchMessage() {
@@ -447,9 +548,9 @@ function conversationAttachFileMessage() {
 
 function conversationShowOptionsMessage() {
     if ($('#chat-option-dropdown').css('display') === "none") {
-        $('#chat-option-dropdown').show();
+        document.getElementById('chat-option-dropdown').style.display = "block";
     } else {
-        $('#chat-option-dropdown').hide();
+        document.getElementById('chat-option-dropdown').style.display = "none";
     }
 }
 
@@ -488,5 +589,132 @@ $('#selectbasic').change(function () {
                 $('#listed_jobs').append(htmlContent);
             }
         }
+    }
+});
+
+$('#enlacesettingslk').click(function () {
+    if ($('#settingslk').is(':visible')) {
+        $('#settingslk').animate({ height: '0px' }, "slow", function () { $('#settingslk').hide(); });
+    } else {
+        $('#settingslk').css({ 'height': '0px', 'display': 'block' });
+        $('#settingslk').animate({ height: 'auto' }, "slow", function () { $('#settingslk').css({ 'height': 'auto' }); });
+        $('#accountlk').animate({ height: '0px' }, "slow", function () { $('#accountlk').hide(); });
+        $('#helplk').animate({ height: '0px' }, "slow", function () { $('#helplk').hide(); });
+    }
+});
+$('#enlaceaccountlk').click(function () {
+    if ($('#accountlk').is(':visible')) {
+        $('#accountlk').animate({ height: '0px' }, "slow", function () { $('#accountlk').hide(); });
+    } else {
+        $('#accountlk').css({ 'height': '0px', 'display': 'block' });
+        $('#accountlk').animate({ height: 'auto' }, "slow", function () { $('#accountlk').css({ 'height': 'auto' }); });
+        $('#settingslk').animate({ height: '0px' }, "slow", function () { $('#settingslk').hide(); });
+        $('#helplk').animate({ height: '0px' }, "slow", function () { $('#helplk').hide(); });
+    }
+});
+$('#enlacehelplk').click(function () {
+    if ($('#helplk').is(':visible')) {
+        $('#helplk').animate({ height: '0px' }, "slow", function () { $('#helplk').hide(); });
+    } else {
+        $('#helplk').css({ 'height': '0px', 'display': 'block' });
+        $('#helplk').animate({ height: 'auto' }, "slow", function () { $('#helplk').css({ 'height': 'auto' }); });
+        $('#settingslk').animate({ height: '0px' }, "slow", function () { $('#settingslk').hide(); });
+        $('#accountlk').animate({ height: '0px' }, "slow", function () { $('#accountlk').hide(); });
+    }
+});
+
+$('#btn-notificaciones').click(function () {
+    $('.panel-hidden-notifications').toggle();
+});
+
+/*Retrieve facebook friends */
+$("#fb_invites").click(function () {
+    FB.ui({
+        app_id: '722008658215991',
+        method: 'send',
+        display: "iframe",
+        name: "sdfds jj jjjsdj j j ",
+        link: 'https://apps.facebook.com/xxxxxxxaxsa',
+        description: 'sasa d d dssd ds sd s s s '
+
+    });
+});
+
+$('#del_account').click(function () {
+    try {
+        swal({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    method: "POST",
+                    url: "/api/delete-user",
+                    data: {}
+                })
+                    .done(function (msg) {
+                        swal(
+                            'Deleted!',
+                            'Account has been deleted.',
+                            'success'
+                        )
+                        location.replace("{!! route('logOut') !!}");
+                    });
+            } else {
+                return true;
+            }
+        })
+    } catch (err) {
+        console.log("ERROR CODE: AW11");
+        console.log(err);
+    }
+});
+
+$('#private_acc').click(function () {
+    try {
+        swal({
+            title: "Are you sure?",
+            text: "If you become Private, will not appear on searches and couldn't be contact by people outside your connections!",
+            type: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Privatize me!'
+        })
+            .then((willDelete) => {
+                if (willDelete.value) {
+                    $.ajax({
+                        method: "POST",
+                        url: "/change-privateaccount-status",
+                        data: {}
+                    })
+                        .done(function (msg) {
+                            if (msg) {
+                                swal(
+                                    'Change has been made!',
+                                    'You\'re now a private user.',
+                                    'success'
+                                )
+                            } else {
+                                swal(
+                                    'Something bad happen!',
+                                    'Error processing the request.',
+                                    'error'
+                                )
+                            }
+                        });
+
+                } else {
+                    return true;
+                }
+            })
+    } catch (err) {
+        console.log("ERROR CODE: AW10");
+        console.log(err);
     }
 });

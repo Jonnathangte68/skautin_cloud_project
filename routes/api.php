@@ -591,5 +591,58 @@ Route::get('retrieve_conversation_threads', function(Request $request) {
             'results' => $results,
         )
     );
-    dd($users);
+});
+
+Route::get('mock_retrieve_search_results', function(Request $request) {
+    $results = array();
+    $search_filters = $request->input('searchTerms');
+    if ($search_filters == NULL) {
+        array(
+            'status' => 'success',
+            'errors' => [], 
+            'results' => [],
+        );
+    }
+
+    $searchedContent = array(
+        array(
+            'email' => 'n@gmail.com', 
+            'name' => 'Le Blue-dijon 14', 
+            'category' => 'Music',
+            'subcategory' => 'Rock',
+            'recruiter_type' => NULL,
+            'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+        ),
+        array(
+            'email' => 'o@gmail.com', 
+            'name' => 'Job Vacant', 
+            'category' => 'Music',
+            'subcategory' => 'Rock',
+            'recruiter_type' => NULL,
+            'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+        ),
+    );
+
+    foreach ($searchedContent as $s) {
+        array_push($results,$s);
+    }
+    return json_encode(
+        array(
+            'status' => 'success',
+            'errors' => [], 
+            'results' => $results,
+        )
+    );
+});
+
+Route::post('retrieve_thread_messages', function(Request $request) {
+    $input = $request->input('thread_id');
+    $results = DB::table('conversation_message')->where([['thread_id', strval($input)]])->get();
+    return json_encode(
+        array(
+            'status' => 'success',
+            'errors' => [], 
+            'results' => $results,
+        )
+    );
 });

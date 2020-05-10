@@ -261,7 +261,50 @@ function apprendThreadBarRecruiter(id, name, picture) {
                     <tr style="text-align:right;">
                         <td onclick="conversationSearchMessage()" style="width: 40%;display:inline;font-size:2.4rem;padding-left:5%;padding-right:5%;"><i class="fa fa-search"></i></td>
                         <td onclick="conversationAttachFileMessage()" style="width: 40%;display:inline;font-size:2.4rem;padding-left:5%;padding-right:5%;"><img src="/img/attach.png" style="width: 22%;"></td>
-                        <td onclick="conversationShowOptionsMessage()" style="width: 40%;display:inline;font-size:2.4rem;padding-left:5%;padding-right:5%;">
+                        <td id="open_dd_files" onclick="conversationShowOptionsMessage()" style="width: 40%;display:inline;font-size:2.4rem;padding-left:5%;padding-right:5%;">
+                            <i class="fa fa-ellipsis-v dropdown-toggle" aria-hidden="true"></i>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>`
+    );
+}
+
+function apprendMessageRecruiter(msg, style_class) {
+    console.log('msg ', msg);
+    if (style_class === "right") {
+        return (
+            `
+                <tr>
+                    <td style="width:50%;"></td>
+                    <td style="width:50%;" class="message-content-container-sender">${msg.content}</td>
+                <tr>
+            `
+        );
+    } else {
+        return (
+            `
+                <tr>
+                    <td style="width:50%;" class="message-content-container-receiver">${msg.content}</td>
+                    <td style="width:50%;"></td>
+                <tr>
+            `
+        );
+    }
+}
+
+function apprendSearchResultCard(isPersonOrJob) {
+    return (
+        `<div class='col-md-4'>
+            <div class="col-md-2"><img src="/api/assets/${picture}" style="width: 70%; height: 70%; border-radius: 50%; -webkit-border-radius:50%; -moz-border-radius: 50%; padding-top: 10%;" /></div>
+            <div class="col-md-7" style="padding-top:3%;font-size: 2.3rem;padding-left:0px;">${name}</div>
+            <div class="col-md-3" style="padding-top:3%;font-size:2.4rem;">
+                <table>
+                    <tr style="text-align:right;">
+                        <td onclick="conversationSearchMessage()" style="width: 40%;display:inline;font-size:2.4rem;padding-left:5%;padding-right:5%;"><i class="fa fa-search"></i></td>
+                        <td onclick="conversationAttachFileMessage()" style="width: 40%;display:inline;font-size:2.4rem;padding-left:5%;padding-right:5%;"><img src="/img/attach.png" style="width: 22%;"></td>
+                        <td id="open_dd_files" style="width: 40%;display:inline;font-size:2.4rem;padding-left:5%;padding-right:5%;">
                             <i class="fa fa-ellipsis-v dropdown-toggle" aria-hidden="true"></i>
                         </td>
                     </tr>
