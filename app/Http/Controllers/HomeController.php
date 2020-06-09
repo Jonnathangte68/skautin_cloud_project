@@ -67,10 +67,22 @@ class HomeController extends Controller
         // Authenticate session
         $sessionUser = new UserSession($user->name, $user->email, $user->user_type);
         $request->session()->put('authenticatedUser', $sessionUser);
-        if ($user->user_type === "recruiter") {
-            return redirect()->action('DashboardController@homeRecruiter');
+        return redirect()->action('HomeController@home');
+        // if ($user->user_type === "recruiter") {
+        //     return redirect()->action('HomeController@homeRecruiter');
+        // } else {
+        //     return redirect()->action('HomeController@homeTalent');
+        // }
+    }
+
+    public function home(Request $request) {
+        $authResult = $request->session()->get('authenticatedUser', 'false');
+        if ($authResult->getType() === "recruiter") {
+            return view('new_refactor.home_recruiter');
+        } elseif ($authResult->getType() === "talent") {
+            return view('new_refactor.home_talent');
         } else {
-            return redirect()->action('DashboardController@homeTalent');
+            abort(404);
         }
     }
 
@@ -149,6 +161,18 @@ class HomeController extends Controller
 
     public function showSearchResults() {
         return view('new_refactor.search_results');
+    }
+
+    public function showAdvancedSearchResults() {
+        return view('new_refactor.advance_search');
+    }
+
+    public function showJobDescription() {
+        return view('new_refactor.job_description');
+    }
+
+    public function showRecruiterProfile(Request $request, $id) {
+        return view('new_refactor.recruiter_profile');
     }
 
     public function deleteAccount() {

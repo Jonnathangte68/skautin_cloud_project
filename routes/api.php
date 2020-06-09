@@ -1,5 +1,8 @@
 <?php
 
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: *");
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\VideoStream;
@@ -47,6 +50,7 @@ $cityList = array(
 
 $recruiterJobs = array(
     array(
+        'id' => '1',
         'title' => 'Dispatcher',
         'description' => 'Is a dispatcher that dispatch dispatches for all of the dispatched people out there',
         'requirements' => 'ABC',
@@ -58,6 +62,11 @@ $recruiterJobs = array(
         'job_type' => 'full-time',
         'level' => 'intermediate',
         'creation_time' => date("Y-m-d H:i:s.u"),
+        'recruiter' => array(
+            'name' => 'JJ Julius Son',
+            'type' => 'Individual',
+            'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+        )
     )
 );
 
@@ -73,6 +82,30 @@ $categoryList = array(
         array('_id' => 8, 'name' => 'Heavy'),
     ),
 );
+
+Route::post('/authenticate', function (Request $request) {
+    error_log('request from another server');
+    $data = $request->all();
+    $status = true;
+    $errors = [];
+    $user = NULL;
+    if (empty($data['email']) || !$data['password']) {
+        $status = false;
+        array_push($errors, 'Missing username or password!');
+    } else {
+        $user = Data::where('email', $data['email'])->first();
+        if (empty($user)) {
+            $status = false;
+            array_push($errors, 'Wrong username or password!');
+        } else if ($user->password !== $data['password']) {
+            $status = false;
+            array_push($errors, 'Wrong username or password!');
+        }
+    }
+    error_log('result');
+    error_log(json_encode(array('status' => $status, 'errors' => $errors, 'user' => $user)));
+    return json_encode(array('status' => $status, 'errors' => $errors, 'user' => $user));
+});
 
 Route::get('/countries', function (Request $request) use ($countryList) {
     error_log(json_encode(array('name' => 'error', 'values' => $countryList)));
@@ -172,27 +205,120 @@ Route::get('/stream/{assetDir}/{assetName}', function (Request $request, $assets
 Route::get('/mock_retrieve_suggestions_prospects', function (Request $request) {
     // Not used in mock but it test that the user it is not empty
     $userId = $request->input('userId');
+    $videoPreview = $request->input('preview');
     if (!$userId) {
         return json_encode(array('status' => 'fail', 'errors' => ['Invalid user id'], 'videos' => []));
     }
-    $array = array(
-        array(
-            'id' => '1',
-            'userName' => 'Brittany Laqurell',
-            'uri' => 'videos/mock_video_one.mp4',
-        ),
-        array(
-            'id' => '2',
-            'userName' => 'Jimena Mitchel',
-            'uri' => 'videos/mock_video_one.mp4',
-        ),
-        array(
-            'id' => '3',
-            'userName' => 'Sara Rivers',
-            'uri' => 'videos/mock_video_two.mp4',
-        ),
-    );
-    return json_encode(array('status' => 'success', 'errors' => [], 'videos' => $array));
+    if ($videoPreview === 'gif') {
+        $array = array(
+            array(
+                'id' => '1',
+                'userName' => 'Brittany Laqurell',
+                'uri' => 'gifs/mock_video_one.gif',
+            ),
+            array(
+                'id' => '2',
+                'userName' => 'Jimena Mitchel',
+                'uri' => 'gifs/mock_video_two.gif',
+            ),
+            array(
+                'id' => '2',
+                'userName' => 'Jimena Mitchel',
+                'uri' => 'gifs/mock_video_four.gif',
+            ),
+            array(
+                'id' => '2',
+                'userName' => 'Jimena Mitchel',
+                'uri' => 'gifs/mock_video_three.gif',
+            ),
+            array(
+                'id' => '2',
+                'userName' => 'Jimena Mitchel',
+                'uri' => 'gifs/mock_video_five.gif',
+            ),
+            array(
+                'id' => '2',
+                'userName' => 'Jimena Mitchel',
+                'uri' => 'gifs/mock_video_one.gif',
+            ),
+            array(
+                'id' => '2',
+                'userName' => 'Jimena Mitchel',
+                'uri' => 'gifs/mock_video_six.gif',
+            ),
+            array(
+                'id' => '2',
+                'userName' => 'Jimena Mitchel',
+                'uri' => 'gifs/mock_video_one.gif',
+            ),
+            array(
+                'id' => '2',
+                'userName' => 'Jimena Mitchel',
+                'uri' => 'gifs/mock_video_five.gif',
+            ),
+            array(
+                'id' => '2',
+                'userName' => 'Jimena Mitchel',
+                'uri' => 'gifs/mock_video_three.gif',
+            ),
+            array(
+                'id' => '2',
+                'userName' => 'Jimena Mitchel',
+                'uri' => 'gifs/mock_video_two.gif',
+            ),
+            array(
+                'id' => '2',
+                'userName' => 'Jimena Mitchel',
+                'uri' => 'gifs/mock_video_six.gif',
+            ),
+            array(
+                'id' => '2',
+                'userName' => 'Jimena Mitchel',
+                'uri' => 'gifs/mock_video_one.gif',
+            ),
+            array(
+                'id' => '2',
+                'userName' => 'Jimena Mitchel',
+                'uri' => 'gifs/mock_video_four.gif',
+            ),
+            array(
+                'id' => '2',
+                'userName' => 'Jimena Mitchel',
+                'uri' => 'gifs/mock_video_five.gif',
+            ),
+            array(
+                'id' => '2',
+                'userName' => 'Jimena Mitchel',
+                'uri' => 'gifs/mock_video_six.gif',
+            ),
+            array(
+                'id' => '2',
+                'userName' => 'Jimena Mitchel',
+                'uri' => 'gifs/mock_video_two.gif',
+            ),
+        );
+        return json_encode(array('status' => 'success', 'errors' => [], 'videos' => $array));
+    }
+    if (!$videoPreview) {
+        $array = array(
+            array(
+                'id' => '1',
+                'userName' => 'Brittany Laqurell',
+                'uri' => 'videos/mock_video_one.mp4',
+            ),
+            array(
+                'id' => '2',
+                'userName' => 'Jimena Mitchel',
+                'uri' => 'videos/mock_video_one.mp4',
+            ),
+            array(
+                'id' => '3',
+                'userName' => 'Sara Rivers',
+                'uri' => 'videos/mock_video_two.mp4',
+            ),
+        );
+        return json_encode(array('status' => 'success', 'errors' => [], 'videos' => $array));
+    }
 });
 
 Route::get('/mock_retrieve_meta_results', function (Request $request) {
@@ -604,21 +730,37 @@ Route::get('mock_retrieve_search_results', function(Request $request) {
         );
     }
 
+    // Recruiter 
+    // Job
+    // Talent
     $searchedContent = array(
         array(
-            'email' => 'n@gmail.com', 
-            'name' => 'Le Blue-dijon 14', 
+            'email' => 'o@gmail.com', 
+            'name' => 'Talent 1', 
             'category' => 'Music',
             'subcategory' => 'Rock',
-            'recruiter_type' => NULL,
+            'country' => 'Finland', 
+            'state' => 'Finland',
+            'city' => 'Finland',
+            'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+        ),
+        array(
+            'title' => 'nbs@gmail.com', 
+            'country' => 'Finland', 
+            'state' => 'Finland',
+            'city' => 'Finland',
+            'description' => 'Description of the job.',
+            'creation_timestamp' => '1970-01-01 00:00:01',
+            'creation_time' => 'Jul 25',
             'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
         ),
         array(
             'email' => 'o@gmail.com', 
-            'name' => 'Job Vacant', 
-            'category' => 'Music',
-            'subcategory' => 'Rock',
-            'recruiter_type' => NULL,
+            'name' => 'Recruiter 1', 
+            'recruiter_type' => 'Individual',
+            'country' => 'Finland', 
+            'state' => 'Finland',
+            'city' => 'Finland',
             'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
         ),
     );
@@ -643,6 +785,149 @@ Route::post('retrieve_thread_messages', function(Request $request) {
             'status' => 'success',
             'errors' => [], 
             'results' => $results,
+        )
+    );
+});
+
+// Talent
+
+Route::get('mock_retrieve_jobs_for_talent', function(Request $request) use ($recruiterJobs) {
+    return json_encode(
+        array(
+            'status' => 'success',
+            'errors' => [], 
+            'results' => $recruiterJobs
+        )
+    );
+});
+
+Route::get('mock_retrieve_job', function(Request $request) {
+    error_log('id from the request ' . $request->input['jobId'] );
+    return json_encode(
+        array(
+            'status' => 'success',
+            'errors' => [], 
+            'results' => array(
+                'id' => '1',
+                'title' => 'Dispatcher',
+                'description' => 'Is a dispatcher that dispatch dispatches for all of the dispatched people out there',
+                'requirements' => 'ABC',
+                'category' => 'music',
+                'subcategory' => 1,
+                'country' => 'Finland',
+                'state' => 'Finland',
+                'city' => 'Finland',
+                'job_type' => 'full-time',
+                'level' => 'intermediate',
+                'creation_time' => date("Y-m-d H:i:s.u"),
+                'recruiter' => array(
+                    'id' => 1,
+                    'name' => 'JJ Julius Son',
+                    'type' => 'Individual',
+                    'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+                )
+            )
+        )
+    );
+});
+
+Route::get('mock_retrieve_jobs_suggestions_for_talent', function(Request $request) {
+    error_log('id from the request ' . $request->input['jobId'] );
+    return json_encode(
+        array(
+            'status' => 'success',
+            'errors' => [], 
+            'results' => array(
+                array(
+                    'id' => '1',
+                    'title' => 'Dispatcher',
+                    'description' => 'Is a dispatcher that dispatch dispatches for all of the dispatched people out there',
+                    'requirements' => 'ABC',
+                    'category' => 'music',
+                    'subcategory' => 1,
+                    'country' => 'Finland',
+                    'state' => 'Finland',
+                    'city' => 'Finland',
+                    'job_type' => 'full-time',
+                    'level' => 'intermediate',
+                    'creation_time' => date("Y-m-d H:i:s.u"),
+                    'recruiter' => array(
+                        'name' => 'JJ Julius Son',
+                        'type' => 'Individual',
+                        'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+                    )
+                )
+            )
+        )
+    );
+});
+
+Route::get('mock_retrieve_recruiter_details', function(Request $request) {
+    return json_encode(
+        array(
+            'status' => 'success',
+            'errors' => [], 
+            'results' => array(
+                'id' => 1,
+                'name' => 'JJ Julius Son',
+                'type' => 'Individual',
+                'city' => 'Finland',
+                'sumary' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.',
+                'picture_uri' => 'images/B4pE5JWHNqqCk5RHX81p34blPGVTRQ.jpg'
+            )
+        )
+    );
+});
+
+Route::get('mock_retrieve_recruiter_job_list', function(Request $request) {
+    return json_encode(
+        array(
+            'status' => 'success',
+            'errors' => [], 
+            'results' => array(
+                array(
+                    'id' => '1',
+                    'title' => 'Dispatcher',
+                    'description' => 'Is a dispatcher that dispatch dispatches for all of the dispatched people out there',
+                    'requirements' => 'ABC',
+                    'category' => 'music',
+                    'subcategory' => 1,
+                    'country' => 'Finland',
+                    'state' => 'Finland',
+                    'city' => 'Finland',
+                    'job_type' => 'full-time',
+                    'level' => 'intermediate',
+                    'creation_time' => date("Y-m-d H:i:s.u")
+                ),
+                array(
+                    'id' => '1',
+                    'title' => 'Dispatcher',
+                    'description' => 'Is a dispatcher that dispatch dispatches for all of the dispatched people out there',
+                    'requirements' => 'ABC',
+                    'category' => 'music',
+                    'subcategory' => 1,
+                    'country' => 'Finland',
+                    'state' => 'Finland',
+                    'city' => 'Finland',
+                    'job_type' => 'full-time',
+                    'level' => 'intermediate',
+                    'creation_time' => date("Y-m-d H:i:s.u")
+                ),
+                array(
+                    'id' => '1',
+                    'title' => 'Dispatcher',
+                    'description' => 'Is a dispatcher that dispatch dispatches for all of the dispatched people out there',
+                    'requirements' => 'ABC',
+                    'category' => 'music',
+                    'subcategory' => 1,
+                    'country' => 'Finland',
+                    'state' => 'Finland',
+                    'city' => 'Finland',
+                    'job_type' => 'full-time',
+                    'level' => 'intermediate',
+                    'creation_time' => date("Y-m-d H:i:s.u")
+                )
+            )
         )
     );
 });

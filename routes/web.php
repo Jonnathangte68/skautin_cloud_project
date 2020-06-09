@@ -22,9 +22,8 @@ Route::get('/', 'HomeController@authenticateGuest')->middleware(RedirectAlreadyM
 Route::get('/landing', 'HomeController@welcome')->middleware([CheckEntrance::class, RedirectIfAuthenticated::class]);
 Route::get('/new-talent-registration', 'HomeController@showNewTalentReg')->middleware([CheckEntrance::class, RedirectIfAuthenticated::class]);
 Route::get('/new-recruiter-registration', 'HomeController@showNewRecruiterReg')->middleware([CheckEntrance::class, RedirectIfAuthenticated::class]);
-Route::get('/home-prospects', 'DashboardController@homeRecruiter')->middleware([CheckEntrance::class, CheckAuthentication::class]);
+Route::get('/skautin', 'HomeController@home')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('home');
 Route::get('log-out','HomeController@logOut')->name('logOut')->middleware([CheckEntrance::class, CheckAuthentication::class]);
-Route::get('/home-oportunities', 'DashboardController@homeTalent')->name('hoportunities');
 Route::get('/talent-preview/{id}','HomeController@showPreviewTalentProfile')->middleware([CheckEntrance::class, CheckAuthentication::class]);
 Route::get('/jobs','HomeController@showRecruiterJobs')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('jobs');
 Route::get('/create-job','HomeController@showCreateJobRecruiter')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('create_new_job');
@@ -32,7 +31,9 @@ Route::get('/connections','HomeController@showConnectionsScreen')->middleware([C
 Route::get('/conversations','HomeController@showConversationsScreen')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('view_conversations');
 Route::get('/settings/{option?}', 'HomeController@showSettingsAccount')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('view_settings');
 Route::get('/search', 'HomeController@showSearchResults')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('view_search_results');
-
+Route::get('/advanced-search', 'HomeController@showAdvancedSearchResults')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('advanced_search');
+Route::get('/job-description/{id}', 'HomeController@showJobDescription')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('job_description');
+Route::get('/recruiter-profile/{id}', 'HomeController@showRecruiterProfile')->middleware([CheckEntrance::class, CheckAuthentication::class])->name('recruiter_profile');
 Route::post('/validate', 'HomeController@validateEntrance');
 Route::post('/home', 'HomeController@iniciarSesion');
 
@@ -103,7 +104,7 @@ Route::get('/getcategsxsubcategs/{categoria}', 'HomeController@getSubsXCateg');
 
 /* Rutas del Talento */
 
-Route::get('/advance-search', 'TalentController@advancedSearch')->name('busqueda_avanzada_talento')->middleware('cauth');
+// Route::get('/advance-search', 'TalentController@advancedSearch')->name('busqueda_avanzada_talento')->middleware('cauth');
 Route::get('/vacant-details/{id}', 'TalentController@vacantDescription')->name('details_vacant_talento')->middleware('cauth');
 Route::get('/profile', 'TalentController@showProfile')->name('profile_talento')->middleware('cauth');
 Route::get('/relations', 'TalentController@showConnections')->name('relations_talento')->middleware('cauth');

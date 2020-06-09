@@ -26,6 +26,35 @@
 		.carousel-control {
 			display: none;
 		}
+		.dropdown-menu-arrow {
+			top: -25px;
+			left: 50%;
+			width: 0;
+			height: 0;
+			position: relative;
+		}
+		.dropdown-menu-arrow:before,
+		.dropdown-menu-arrow:after {
+			content: "";
+			position: absolute;
+			display: block;
+			width: 0;
+			height: 0;
+			border-width: 7px 8px;
+			border-style: solid;
+			border-color: transparent;
+			z-index: 1001;
+		}
+		.dropdown-menu-arrow:after {
+			bottom: -18px;
+			right: -8px;
+			border-bottom-color: #fff;
+		}
+		.dropdown-menu-arrow:before {
+			bottom: -17px;
+			right: -8px;
+			border-bottom-color: rgba(0,0,0,.15);
+		}
 	</style>
 	<style>body {overflow-x: hidden !important;}</style>
 </head>
@@ -75,14 +104,16 @@
 			<li class="hide-on-mobile"><a title="NOTIFICATIONS" data-toggle="popover" data-placement="bottom" data-content="" class="popover-notifications">
 			<img src="{{ URL::asset('img/bell.png') }}" class="img-navbar-menu"></a></li>
           <!--<li><a href="#"><i class="fas fa-bell" class="img-navbar-menu" style="color:#FFD700;"></i></a></li>-->
-          <li class="hide-on-mobile"><a href="{{route('jobs')}}"><img src="{{ URL::asset('img/menu_3.jpg') }}" class="img-navbar-menu"></a></li>
+          <li class="hide-on-mobile"><a href="{{ (Session::get('authenticatedUser')->getType() === 'recruiter') ? route('jobs') : route('home') }}"><img src="{{ URL::asset('img/menu_3.jpg') }}" class="img-navbar-menu"></a></li>
           <li class="hide-on-mobile"><a href="{{route('view_connections')}}"><img src="{{ URL::asset('img/menu_1.png') }}" class="img-navbar-menu"></a></li>
           <li class="hide-on-mobile"><a href="{{route('view_conversations')}}"><img src="{{ URL::asset('img/menu_2.png') }}" class="img-navbar-menu"></a></li>
           <!--<li><a href="#"><img src="briefcase.png" style="width: 28px;"></a></li>-->
           <li class="dropdown hide-on-mobile"><a data-toggle="dropdown" class="no-backgroundblackstrange link-hand"><img src="{{ URL::asset('img/menu_4.png') }}" class="img-navbar-menu"></a>
 			<ul class="dropdown-menu">
+				@if (Session::get('authenticatedUser')->getType() === 'recruiter')
 					<li><a href="/home-prospects"><i class="fas fa-home"></i>&nbsp;&nbsp;HOME</a></li>
 					<li class="divider"></li>
+				@endif
 		    	<li><a href="{{ route('view_settings') }}/invite-fb">Invite friends from Fb</a></li>
 		    	<li class="divider"></li>
 		    	<li><a href="{{ route('view_settings') }}/global-settings">Settings</a></li>
@@ -101,7 +132,7 @@
 			  <!--<input placeholder="Search term">-->
 			  <input id="prependedtext" name="prependedtext" class="form-control nav-advance-search-search" placeholder="Search talents, recruiters and Jobs" type="text"/>
 		  </div>
-		  <a href="{{route('busqueda_avanzada_talento')}}" class="advanced-search-text hide-on-mobile">Advanced Search</a>
+		  <a href="{{route('advanced_search')}}" class="advanced-search-text hide-on-mobile">Advanced Search</a>
 		  <button id="menu_mobile_handler" class="show-on-mobile btn-mobile-navigation"><img src="{{asset('img/menu_4.png')}}"></button>
 		  <!-- nav options for mobile -->
 		  <div class="responsive-menu-main">
@@ -134,5 +165,13 @@
 		<!-- <script type="text/javascript" src="{{ URL::asset('js/redirectIfnotAuthenticated.js') }}"></script> -->
 	@yield('scripts')
 	@include('new_refactor.modals')
+
+	<div style="display:block; position:absolute;top:10%;left:25%; z-index:1000000;">
+		<div id="dsgsd" class="dropdown-menu" aria-labelledby="customDropdown">
+			<span class="dropdown-menu-arrow"></span>
+			<a class="dropdown-item" href="#">Dropdown link</a>
+			<a class="dropdown-item" href="#">Dropdown link</a>
+		</div>
+	</div>
 </body>
 </html>

@@ -18,4 +18,8 @@ class AuthenticatedUser extends Model
         $this->mac_address = $mac_address;
         $this->user_type = $user_type;
     }
+
+    public function getType() {
+        return $this->type;
+    }
 }

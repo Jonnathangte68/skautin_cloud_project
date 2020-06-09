@@ -15,8 +15,9 @@
             </div>
             <div class="col-md-4"></div>
         </div>
-        <div id="search_content" class="container-fluid">
-
+        <br>
+        <div class="container-fluid">
+            <div id="search_content" class="row"></div>
         </div>
     </section>
     <input type="hidden" id="search_result_page" value="true" /> 
@@ -37,6 +38,9 @@
         }
         .fa-circle {
             width: 0.6rem !important;
+        }
+        .hidden-card {
+            display: none;
         }
     </style>
 @endsection

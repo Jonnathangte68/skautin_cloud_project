@@ -4,6 +4,7 @@
 
 @section('center_box')
   <section class="results">
+    <input type="hidden" id="is_talent_home_page" value="true" />
     <p class="letragrande"><b>{{-- count($data['vacantes']) --}} Opportunities for you</b></p>
     <div class="row searchrow">
       <div class="col-md-8">
@@ -18,18 +19,7 @@
           </select>
       </div>
     </div>
-    <div class="row">
-      <!--<a href="/vacant-details/1">-->
-        {{-- @foreach ($data['vacantes'] as $vacante) --}}
-            <div class="col-md-4 divact"><a href="/vacant-details/{{-- $vacante->id --}}">
-              <p class="letragrande titulojob" ><b>{{-- $vacante->name --}}</b></p>
-              <p class="letramedia titulojoblocation"><?php /* if(property_exists($vacante, 'region_info')) */ ?>{{-- $vacante->region_info --}}</p>
-              <p class="letrachica"><?php /* if(property_exists($vacante, 'description')) {echo $vacante->description;} */ ?></p>
-              <p class="timeago-maketime" style="float: right;clear: both;color:#686868;"><b>{{-- $vacante->date --}}</b></p>
-            </a></div>
-            {{-- @endforeach --}}
-      <!--</a>-->
-    </div>
+    <div id="listed_jobs" class="row"></div>
   </section>
 @endsection
 
@@ -51,13 +41,6 @@
 
 @section('scripts')
     @parent
-    <script type="text/javascript" src="https://timeago.yarp.com/jquery.timeago.js"></script>
-    <script type="text/javascript" src="{{asset('js/jquery.timeago.min.js')}}"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('.timeago-maketime').each(function(k, v) {
-                $(v).text($.timeago($(v).text()));
-            });
-        });
-    </script>
+    <script type="text/javascript" src="/js/new_refactor/html_template_functions.js"></script>
+    <script type="text/javascript" src="/js/new_refactor/talent.js"></script>
 @endsection

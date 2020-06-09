@@ -136,6 +136,25 @@ function apprendOwnJobRecruiter(job) {
     );
 }
 
+function apprendJobForTalent(job) {
+    return (
+        `<div class="col-md-3 item-vacant">
+            <h3>${job.title}</h3>
+            <p style="text-align: justify;">${job.recruiter.name} / ${job.recruiter.type}</p>
+            <p style="word-break: break-all;">
+                <span class="innerCountry">${job.country}</span>,
+                <span class="innerState">${job.state}</span>,
+                <span class="innerCity">${job.city}</span></p>
+            <table>
+                <tr>
+                    <td width="50%">${job.creation_time}</td>
+                    <td width="50%"><button class="btn btn-primary" onclick="viewJob(${job.id})">Apply</button></td>
+                <tr>
+            </table>
+        </div>`
+    );
+}
+
 function apprendEmptyErrorCreateJob(title) {
     return (
         `
@@ -294,22 +313,184 @@ function apprendMessageRecruiter(msg, style_class) {
     }
 }
 
-function apprendSearchResultCard(isPersonOrJob) {
+function apprendSearchResultCard(data, type) {
+    if (type !== 2) {
+        return (
+            `<div class="col-md-4 ${(type === 0) ? 'talent-card' : 'recruiter-card'}">
+                    <div class="col-md-3" style="padding-right:0px !important;">
+                        <img 
+                            src="/api/assets/${data.picture_uri}" 
+                            style="width: 70%; height: 70%; border-radius: 50%; -webkit-border-radius:50%; -moz-border-radius: 50%;"
+                        >
+                    </div>
+                    <div class="col-md-9" style="padding-top: 1%;padding-left:0px !important;">
+                        ${data.name}</br>
+                        <p style="word-break: break-all;">
+                        <span class="innerCountry">${data.country}</span>,
+                        <span class="innerState">${data.state}</span>,
+                        <span class="innerCity">${data.city}</span></p>
+                        <p style="text-align: justify;">${(type === 0) ? data.category + '/' + data.subcategory : data.recruiter_type}</p>
+                    </div>
+                </div>`
+        );
+    } else {
+        return (
+            `
+            <div class="col-md-4 job-card">
+                <div class="col-md-3" style="padding-right:0px !important;">
+                    <img 
+                        src="/api/assets/${data.picture_uri}" 
+                        style="width: 70%; height: 70%; border-radius: 50%; -webkit-border-radius:50%; -moz-border-radius: 50%;"
+                    >
+                </div>
+                <div class="col-md-9" style="padding-top: 1%;padding-left:0px !important;">
+                    ${data.title}</br>
+                    <p style="word-break: break-all;">
+                    <span class="innerCountry">${data.country}</span>,
+                    <span class="innerState">${data.state}</span>,
+                    <span class="innerCity">${data.city}</span></p>
+                    <p style="text-align: justify;">${data.description}</p>
+                    <p style="text-align: right;" class="pega-derecha timeago-maketime" data-time_mark="${data.creation_timestamp}">${data.creation_time}</p>
+                </div>
+            </div>
+            `
+        );
+    }
+}
+
+function apprendJobDescriptionHeaderTalent(job) {
+    console.log('apprendJobDescriptionHeaderTalent ', job);
     return (
-        `<div class='col-md-4'>
-            <div class="col-md-2"><img src="/api/assets/${picture}" style="width: 70%; height: 70%; border-radius: 50%; -webkit-border-radius:50%; -moz-border-radius: 50%; padding-top: 10%;" /></div>
-            <div class="col-md-7" style="padding-top:3%;font-size: 2.3rem;padding-left:0px;">${name}</div>
-            <div class="col-md-3" style="padding-top:3%;font-size:2.4rem;">
-                <table>
-                    <tr style="text-align:right;">
-                        <td onclick="conversationSearchMessage()" style="width: 40%;display:inline;font-size:2.4rem;padding-left:5%;padding-right:5%;"><i class="fa fa-search"></i></td>
-                        <td onclick="conversationAttachFileMessage()" style="width: 40%;display:inline;font-size:2.4rem;padding-left:5%;padding-right:5%;"><img src="/img/attach.png" style="width: 22%;"></td>
-                        <td id="open_dd_files" style="width: 40%;display:inline;font-size:2.4rem;padding-left:5%;padding-right:5%;">
-                            <i class="fa fa-ellipsis-v dropdown-toggle" aria-hidden="true"></i>
-                        </td>
-                    </tr>
-                </table>
+        `<div class="row">
+            <div class="col-md-2">
+                <img src="/api/assets/${job.recruiter.picture_uri}" style="width: 100%; height: 100%; padding-top: 30%; border-radius: 50%; -webkit-border-radius:50%; -moz-border-radius: 50%;" />
+            </div>
+            <div class="col-md-3 item-vacant">
+                <h3>${job.title}</h3>
+                <p style="text-align: justify;">${job.recruiter.name} / ${job.recruiter.type}</p>
+                <p style="word-break: break-all;">
+                    <span class="innerCountry">${job.country}</span>,
+                    <span class="innerState">${job.state}</span>,
+                    <span class="innerCity">${job.city}</span></p>
+                <p style="text-align: justify;">${job.creation_time}</p>
+            </div>
+            <div class="col-md-7" style="text-align:right;padding-top: 6%;">
+                <button class="btn btn-primary" onclick="applyToJob(${job.id})">Apply</button>
+                <a href="#" class="linklittlf" onclick="viewRecruiterProfile(${job.recruiter.id})"><img src="/img/goto.png" style="width: 38px;"></a>
+        		<a href="#" class="linklittlf"><i class="fas fa-ellipsis-h"></i></a>
             </div>
         </div>`
     );
+}
+
+function apprendJobDescriptionContent(job) {
+    console.log('job details ', job);
+    return (
+        `<div class="row">
+            <div class="col-md-9">
+                <div class="class-md-12"><h3 style="margin-left:35px;">Job Description</h3></div>
+                <p id="description_content" style="text-align: justify; margin-left: 6%; margin-right: 6%;">
+                    ${job.description}
+                </p>
+                <div class="class-md-12"><h3 style="margin-left:35px;">Requirements</h3></div>
+                <p id="requirements_content" style="text-align: justify; margin-left: 6%; margin-right: 6%;">
+                    ${job.requirements}
+                </p>
+            </div>
+            <div class="col-md-3" style="padding: 0px !important;">
+                <div class="row">
+                    <div class="col-md-1" style="height: 25vh; border-left: 1px solid #ddd; margin-top: 10%; margin-bottom: 10%; padding-left: 5%;">
+                        <span style="color:transparent;">.</span>
+                    </div>
+                    <div class="col-md-9" style="margin-top:3%;">
+                        <p style="font-size: 1.6rem; font-weight: bold; margin-bottom: 20%;">${job.category}</p>
+                        <p style="font-size: 1.6rem; margin-bottom: 20%">${job.subcategory}</p>
+                        <p style="font-size: 1.6rem; margin-bottom: 20%;">${job.level}</p>
+                        <p style="font-size: 1.6rem; margin-bottom: 20%">${job.job_type}</p>
+                    </div>
+                </div>
+            </div>
+        </div>`
+    );
+}
+
+function apprendShortJobForTalent(job) {
+    return (`<div class="row" style="padding:2%;">
+        <div class="col-md-3" style="padding-right:0px !important;">
+            <img 
+                src="/api/assets/${job.recruiter.picture_uri}" 
+                style="width: 70%; height: 70%; border-radius: 50%; -webkit-border-radius:50%; -moz-border-radius: 50%;"
+            >
+        </div>
+        <div class="col-md-9" style="padding-top: 1%;padding-left:0px !important;">
+        <h3 style="margin-top: 0px !important;">${job.title}</h3>
+        <p style="text-align: justify;">${job.recruiter.name} / ${job.recruiter.type}</p>
+        <p style="word-break: break-all;">
+            <span class="innerCountry">${job.country}</span>,
+            <span class="innerState">${job.state}</span>,
+            <span class="innerCity">${job.city}</span></p>
+        <p style="text-align: justify;">${job.creation_time}
+            <button class="btn btn-primary">Apply</button></p>
+        </div>
+    </div>`);
+}
+
+function apprendRecruiterDescription(recruiter) {
+    console.log('recruiter details ', recruiter);
+    return (`
+        <div class="row" style="padding-top: 2%; padding-left: 6% !important;">
+            <div class="col-md-4">
+                <img 
+                    src="/api/assets/${recruiter.picture_uri}" 
+                    style="width: 100%; height: 22rem;"
+                >
+            </div>
+            <div class="col-md-4">
+                <ul style="list-style-type: none;">
+                    <li style="margin-bottom: 1rem;">Name: ${recruiter.name}</li>
+                    <li style="margin-bottom: 1rem;">Type: ${recruiter.type}</li>
+                    <li style="margin-bottom: 1rem;">City: ${recruiter.city}</li></ul>
+            </div>
+            <div class="col-md-4">
+                <ul style="list-style-type: none; margin-top: 40%;">
+                    <li style="display:inline;">
+                        <button class="btn btn-primary">Connect</button>
+                    </li>
+                    <li style="display:inline;">
+                        <button class="btn btn-primary">Follow</button>
+                    </li>
+                <ul>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 2%; padding-left: 6% !important;">
+            <div class="col-md-8">
+                <h2>About the recruiter</h2>
+                <br>
+                <p style='text-align:justify;'>${recruiter.sumary}</p>
+            </div>
+        </div>
+    `);
+}
+
+function apprendShortJobRecruiterList(job) {
+    return (`
+        <div class="row" style="padding:2%;">
+            <div class="col-md-2">
+                <i class="fa fa-circle" aria-hidden="true" style="font-size: 0.6em;"></i>
+            </div>
+            <div class="col-md-10" style="padding-left:0px !important;">
+                <h3 style="margin-top: 0px !important;">
+                    ${job.title}
+                </h3>
+                <p style="word-break: break-all;">
+                    <span class="innerCountry">${job.country}</span>,
+                    <span class="innerState">${job.state}</span>,
+                    <span class="innerCity">${job.city}</span>
+                </p>
+                <p style="text-align: justify;">${job.creation_time}
+                    <button class="btn btn-primary">Apply</button>
+                </p>
+            </div>
+        </div>
+    `);
 }

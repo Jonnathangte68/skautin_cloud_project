@@ -132,9 +132,8 @@
                 <label class="col-md-4 control-label textoc10" for="level">Level:</label>
                 <div class="col-md-6">
                     <select id="level" name="level" class="form-control">
-                      <option value="begineer">Beginner</option>
-                      <option value="intermediate">Intermediate</option>
-                      <option value="senior">Senior</option>
+                      <option value="amateur">Amateur</option>
+                      <option value="professional">Professional</option>
                     </select>
                 </div>
               </div>

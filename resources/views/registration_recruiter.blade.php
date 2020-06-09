@@ -235,9 +235,8 @@
       <label class="col-md-4 control-label textoc10" for="level">Level:</label>
       <div class="col-md-6">
           <select id="levels" name="levels[]" class="form-control" multiple>
-            <option value="beginner">Beginner</option>
-            <option value="intermediate">Intermediate</option>
-            <option value="senior">Senior</option>
+            <option value="amateur">Amateur</option>
+            <option value="professiona;">Professional</option>
           </select>
       </div>
     </div>
